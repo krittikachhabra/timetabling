@@ -7,8 +7,12 @@ public class Random
     double AM = (1.0/IM);
     int IQ = 127773;
     int IR = 2836;
-
-    double next() { return ran01((long)(100*Math.random()));}
+    long seed;
+    Random(final int arg)
+    {
+    	seed = arg;
+    }
+    double next() { return ran01(seed);}
 
     double ran01( long idum )
     {

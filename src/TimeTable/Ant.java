@@ -1,5 +1,7 @@
 package TimeTable;
 
+import java.util.Vector;
+
 public class Ant {
     int fitness;
     Solution solution;
@@ -29,6 +31,8 @@ public class Ant {
 
             // choose a random number between 0.0 and sum of the pheromone level
             // for this event and current sum of heuristic information
+//            double yu = ;
+//            System.out.println("solution.rg.next() = " + (yu*range));
             double rnd = solution.rg.next() * range;
 
             // choose a timeslot for the event based on the pheromone table and the random number
@@ -38,6 +42,7 @@ public class Ant {
             {
                 // check the pheromone
                 total += problem.event_timeslot_pheromone[e][j];
+//            	System.out.println(total);
                 if (total>=rnd)
                 {
                     timeslot = j;
@@ -45,8 +50,19 @@ public class Ant {
                 }
             }
             // put an event i into timeslot t
+            
             solution.sln.get(e).first = timeslot;
-            solution.timeslot_events.get(timeslot).addElement(e);
+            
+            if(solution.timeslot_events.containsKey(timeslot))
+            	solution.timeslot_events.get(timeslot).addElement(e);
+            else
+            {
+            	Vector <Integer> vtemp = new Vector<Integer>();
+            	vtemp.addElement(e);
+            	solution.timeslot_events.put(timeslot, vtemp);
+            }
+            
+//            solution.timeslot_events.get(timeslot).addElement(e);
         }
 
         // assign rooms to events in each non-empty timeslot

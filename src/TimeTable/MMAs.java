@@ -1,11 +1,20 @@
 package TimeTable;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 
 public class MMAs
 {
     public static void main(String args[])throws IOException
     {
+    	PrintStream o = new PrintStream(new File("A.txt")); 
+
+		// Store current System.out before assigning a new value 
+		PrintStream console = System.out; 
+
+		// Assign o to output stream 
+		System.setOut(o); 
     	System.out.println("Starting at MMAs");
         int n_of_ants = Definitions.DEFAULT_N_OF_ANTS;
         Ant[] ant = new Ant[n_of_ants];
@@ -17,7 +26,7 @@ public class MMAs
 
         // create a Random object
         Control control = new Control();
-        Random rnd = new Random();
+        Random rnd = new Random(Integer.parseInt(args[0]));
 
         // create a buffer for holding global best solution
         Solution best_solution = new Solution((Problem)problem, rnd);
@@ -26,6 +35,7 @@ public class MMAs
         // run a number of tries, control knows how many tries there should be done
         while (control.triesLeft())
         {
+        	System.out.println("triesLeft called");
             // tell control we are starting a new try
             control.beginTry();
 

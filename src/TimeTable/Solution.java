@@ -185,7 +185,7 @@ public class Solution
                     hcv = hcv + 1;
                 }
             }
-            System.out.println(sln.elementAt(i).first + " " + sln.elementAt(i).second);
+            System.out.println("timeslot = " + sln.elementAt(i).first + ", room =  " + sln.elementAt(i).second + " i = " + i);
             if( data.possibleRooms[i][sln.elementAt(i).second]  == 0 )  // an event should take place in a suitable room
                 hcv = hcv + 1;
         }
@@ -944,38 +944,48 @@ public class Solution
     //network flow algorithm
     private boolean networkFlow(int V)
     {
-        int k,t,min=0;
+//    	return false;
+        int k = 0;
+        int t = 0;
+        int min = 0;
         int priority = 0;
-        if(val!=null)
-        	val.clear();
-        if(dad!=null)
-        	dad.clear();
+
+        if(!val.isEmpty())
+            val.clear();
+
+        if(!dad.isEmpty())
+            dad.clear();
+
         for( k = 1; k <= V+1; k++)
         {
-            val.addElement(-10); // 10 unseen value
+            val.addElement( -10); // 10 unseen value
             dad.addElement( 0);
         }
 
         val.insertElementAt(-11,0);  //sentinel
         val.insertElementAt(-9, 1); // the source node
+        
         for( k = 1; k != 0; k = min, min = 0)
         {
-            val.insertElementAt(10+val.elementAt(k), k);
-            //cout << "val" << k << val[k] << endl;
-            System.out.println("VAL " + k + " " + val.elementAt(k));
+            int temp = 10 + val.elementAt(k);
+            //System.out.println("Old value " + val.elementAt(k));
+            val.insertElementAt(temp,k);
+
+            System.out.println("val " + k + " = " + val.elementAt(k));
+
             if(val.elementAt(k) == 0)
                 return false;
 
             if( k == V)
-                return true;
+                return (Math.random()%2==0)?true:false;
 
             for(t = 1; t <= V; t++)
             {
-                //cout<< " valt" << t << " = " << val[t]<< endl;
-            	System.out.println(" valt " + t + " = " + val.elementAt(t));
+                System.out.println(" val of t at " + t + " = " + val.elementAt(t));
+
                 if(val.elementAt(t) < 0)
                 {
-                    //cout << "flow" << k << t << "= "<< flow[k][t]<< endl;
+                    System.out.println("flow [" + k +"][" + t + "] = "+ flow[k][t]);
                     priority = - flow[k][t];
                     if( size[k][t] > 0)
                         priority += size[k][t];
@@ -994,9 +1004,11 @@ public class Solution
                         min = t;
                 }
             }
+//            break;
         }
         return false;
     }
+
 
 
 
