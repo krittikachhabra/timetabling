@@ -1,128 +1,102 @@
 package TimeTable;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 
 public class MMAs
 {
     public static void main(String args[])throws IOException
     {
-    	PrintStream o = new PrintStream(new File("A.txt")); 
-
-		// Store current System.out before assigning a new value 
-		PrintStream console = System.out; 
-
-		// Assign o to output stream 
-		System.setOut(o); 
-    	System.out.println("Starting at MMAs");
         int n_of_ants = Definitions.DEFAULT_N_OF_ANTS;
         Ant[] ant = new Ant[n_of_ants];
 
         double pheromone_evaporation = Definitions.DEFAULT_PHEROMONE_EVAPORATION;
         double minimal_pheromone = Definitions.DEFAULT_MINIMAL_PHEROMONE;
 
-        MMAsProblem problem = new MMAsProblem( pheromone_evaporation, minimal_pheromone);
+        MMAsProblem problem = new MMAsProblem(pheromone_evaporation, minimal_pheromone);
 
-        // create a Random object
         Control control = new Control();
-        Random rnd = new Random(Integer.parseInt(args[0]));
 
-        // create a buffer for holding global best solution
-        Solution best_solution = new Solution((Problem)problem, rnd);
+        Solution best_solution = new Solution(problem);
 
-    	System.out.println(control.triesLeft());
-        // run a number of tries, control knows how many tries there should be done
         while (control.triesLeft())
         {
-        	System.out.println("triesLeft called");
-            // tell control we are starting a new try
             control.beginTry();
-
-            // reset the pheromone level to the initial value;
             problem.pheromoneReset();
 
-            // initialize best solution with random value
             best_solution.RandomInitialSolution();
             best_solution.computeFeasibility();
             control.setCurrentCost(best_solution);
 
-            // do if we still have time for current try
-            //while ()
+            long startTime = System.currentTimeMillis();
+
+            while ((System.currentTimeMillis() - startTime) < 5000)
             {
-                // create a set of ants
-                for (int i=0;i<n_of_ants;i++)
-                    ant[i] = new Ant(problem, rnd);
 
-                // let the ants do the job - create some solutions
+                Control poop = new Control();
                 for (int i=0;i<n_of_ants;i++)
-                    ant[i].Move();
+                {
+                    ant[i] = new Ant(problem);
+                    //ant[i].start();
+                    ant[i].run();
+                }
 
-                // evaporate the pheromone
+                int iop = poop .computeHCV(best_solution);
                 problem.evaporatePheromone();
 
-                // find the the best solution
                 int best_fitness = 99999;
                 int ant_idx = -1;
                 for (int i=0;i<n_of_ants;i++)
                 {
                     int fitness = ant[i].computeFitness();
-                    if (fitness<best_fitness) {
+                    if (fitness<best_fitness)
+                    {
                         best_fitness = fitness;
                         ant_idx = i;
                     }
                 }
+//                ant[ant_idx].solution.localSearch(100,2);
+                int ui = poop.computeHCV(ant[ant_idx].solution);
 
-                // apply local search until local optimum is reached or a time limit reached
-                ant[ant_idx].solution.localSearch(Definitions.DEFAULT_MAX_STEPS);
+                /*System.out.println("Before statistics for best solution");
+                System.out.println(control.computeHCV(best_solution));*/
 
-                // and see if the solution is feasible
                 ant[ant_idx].solution.computeFeasibility();
-
-                // output the new best solution, if found
-                if (ant[ant_idx].solution.feasible) {
-
+                if (ant[ant_idx].solution.feasible)
+                {
                     ant[ant_idx].solution.computeScv();
-                    if (ant[ant_idx].solution.scv<=best_solution.scv) {
+                    if (ant[ant_idx].solution.scv<=best_solution.scv)
+                    {
                         best_solution.copy(ant[ant_idx].solution);
                         best_solution.hcv = 0;
                         control.setCurrentCost(best_solution);
                     }
                 }
-			else {
+
+                else
+                {
                     ant[ant_idx].solution.computeHCV();
                     if (ant[ant_idx].solution.hcv<=best_solution.hcv)
                     {
                         best_solution.copy(ant[ant_idx].solution);
                         control.setCurrentCost(best_solution);
-                        best_solution.scv = 99999;
+                        best_solution.scv = Integer.MAX_VALUE;
                     }
                 }
 
-                // perform pheromone update with the global best solution
                 Solution tmp_solution = ant[ant_idx].solution;
                 ant[ant_idx].solution = best_solution;
-
-                // and deposit pheromone for this best one
-                ant[ant_idx].computeFitness();
                 problem.pheromoneMinMax();
-                ant[ant_idx].depositPheromone();
 
+                ant[ant_idx].computeFitness();
+                ant[ant_idx].depositPheromone();
                 ant[ant_idx].solution = tmp_solution;
 
-                // let the ants die
-                for(int i=0;i<n_of_ants;i++)
-                    ant[i]  = null;
-
+                /*System.out.println("After statistics for best solution");
+                System.out.println(control.computeHCV(best_solution));*/
             }
-            // end try - output the best solution found
+
             control.endTry(best_solution);
+            System.exit(0);
         }
-
-        problem = null;
-        ant = null;
-        best_solution = null;
-        rnd = null;
     }
-
 }

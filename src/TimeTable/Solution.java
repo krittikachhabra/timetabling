@@ -1,88 +1,72 @@
 package TimeTable;
 import java.util.*;
 
-public class Solution
+public class Solution extends Thread
 {
-    private int size[][];
-    private int flow[][];
-    private Vector<Integer> val = new Vector<Integer>();
-    private Vector<Integer> dad = new Vector<Integer>();
-
-    Vector< Pair<Integer,Integer>>  sln = new Vector< Pair<Integer,Integer>>(); // vector of (timeslot, room) assigned for each event
-    Map<Integer, Vector<Integer> > timeslot_events = new HashMap<Integer, Vector<Integer> >(); // for each timeslot a vector of events taking place in it
+    protected Vector<Pair<Integer, Integer>> sln = new Vector<Pair<Integer, Integer>>(); // vector of (timeslot, room) assigned for each event
+    protected Map<Integer, Vector<Integer>> timeslot_events = new HashMap<Integer, Vector<Integer>>(); // for each timeslot a vector of events taking place in it
     Problem data; // a pointer to the problem data
-    Random rg;
 
     Boolean feasible;
     int scv;   // keeps the number of soft constraint violations (ComputeScv() has to be called)
     int hcv;
 
-    Solution(Problem pd, Random rnd)
+    Solution(Problem pd)
     {
-    	System.out.println("Solution called");
         data = pd;
-        rg = rnd;
         slnInit();
     }
 
-    private void slnInit() {
+    private void slnInit()
+    {
 
-        Pair initPair = new Pair(-1,-1);
-        for (int i = 0; i < (data).n_of_events; i++ )
-        {
-//        	System.out.println(sln.lastElement());
-            sln.addElement( initPair ) ;
+        Pair initPair = new Pair(-1, -1);
+        for (int i = 0; i < (data).n_of_events; i++) {
+            sln.addElement(initPair);
         }
 
     }
 
     void copy(Solution orig)
     {
-        sln = orig.sln;
-        data = orig.data;
-        timeslot_events = orig.timeslot_events;
-        feasible = orig.feasible;
-        scv = orig.scv;
-        hcv = orig.hcv;
+        this.sln = orig.sln;
+        this.data = orig.data;
+        this.timeslot_events = orig.timeslot_events;
+        this.feasible = orig.feasible;
+        this.scv = orig.scv;
+        this.hcv = orig.hcv;
     }
 
-    void RandomInitialSolution( )
+    void RandomInitialSolution()
     {
-        // assign a random timeslot to each event
-        for(int i = 0; i < data.n_of_events; i++)
-        {
-            int t = (int)(Math.random() * 45);
+        for (int i = 0; i < data.n_of_events; i++) {
+            int t = (int) ((Math.random() * System.currentTimeMillis()) % Definitions.N_OF_TIMESLOTS);
             sln.elementAt(i).first = t;
 
-            if(timeslot_events.containsKey(t))
-            	timeslot_events.get(t).addElement(i);
-            else
-            {
-            	Vector <Integer> vtemp = new Vector<Integer>();
-            	vtemp.addElement(i);
-            	timeslot_events.put(t, vtemp);
+            if (timeslot_events.containsKey(t))
+                timeslot_events.get(t).addElement(i);
+            else {
+                Vector<Integer> vtemp = new Vector<Integer>();
+                vtemp.addElement(i);
+                timeslot_events.put(t, vtemp);
             }
-            //pair insert;
         }
         // and assign rooms to events in each non-empty timeslot
-        for(int j = 0; j < 45; j++)
-        {
-        	Vector<Integer> temp = new Vector<Integer>();
-//        	Iterator it = timeslot_events.get(0).iterator();
-//        	while(it.hasNext())
-//        	{
-//        		System.out.println(it.next());
-//        	}
+        for (int j = 0; j < Definitions.N_OF_TIMESLOTS; j++) {
+            Vector<Integer> temp = new Vector<Integer>();
             temp = timeslot_events.get(j);
-            if(temp!=null)
+            if (temp != null)
                 assignRooms(j);
         }
+
+        /*TestOutput test = new TestOutput();
+        test.printTSlotEvents(this);*/
     }
 
     boolean computeFeasibility()
     {
         for (int i = 0; i < data.n_of_events; i++) {
-            for (int j = i+1; j < data.n_of_events; j++) {
+            for (int j = i + 1; j < data.n_of_events; j++) {
                 if ((sln.elementAt(i).first == sln.elementAt(j).first) && (sln.elementAt(i).second == sln.elementAt(j).second)) {
                     feasible = false;
                     return false;                                // only one class can be in each room at any timeslot
@@ -92,10 +76,11 @@ public class Solution
                     return false;                                // two events sharing students cannot be in the same timeslot
                 }
             }
-            if( data.possibleRooms[i][sln.elementAt(i).second]  == 0 ){
-                feasible = false;
-                return false;                 // each event should take place in a suitable room
-            }
+            if (sln.elementAt(i).second != -1)
+                if (data.possibleRooms[i][sln.elementAt(i).second] == 0) {
+                    feasible = false;
+                    return false;                 // each event should take place in a suitable room
+                }
         }
         // if none of the previous hard constraint violations occurs the timetable is feasible
         feasible = true;
@@ -109,57 +94,50 @@ public class Solution
 
         scv = 0; // set soft constraint violations to zero to start with
 
-        for(int i = 0; i < data.n_of_events; i++)
-        { // classes should not be in the last slot of the day
-            if( sln.elementAt(i).first%9 == 8 )
+        for (int i = 0; i < data.n_of_events; i++) { // classes should not be in the last slot of the day
+            if (sln.elementAt(i).first % Definitions.TIMESLOTS_PER_DAY == 8)
                 scv += data.studentNumber[i];  // one penalty for each student attending such a class
         }
 
-        for (int j = 0; j < data.n_of_students; j++)
-        { // students should not have more than two classes in a row
+        for (int j = 0; j < data.n_of_students; j++) { // students should not have more than two classes in a row
             consecutiveClasses = 0;
-            for (int i = 0; i < 45; i++)
-            { // count consecutive classes on a day
-                if ((i % 9) == 0)
-                {
+            for (int i = 0; i < Definitions.N_OF_TIMESLOTS; i++) { // count consecutive classes on a day
+                if ((i % 9) == 0) {
                     consecutiveClasses = 0;
                 }
                 attendsTimeslot = false;
-                for (int k = 0; k < (timeslot_events.get(i)).size(); k++) {
-                    if (data.student_events[j][timeslot_events.get(i).get(k)] == 1) {
-                        attendsTimeslot = true;
-                        consecutiveClasses = consecutiveClasses + 1;
-                        if (consecutiveClasses > 2) {
-                            scv = scv + 1;
-                        }
-                        break;
-                    }
-                }
-                if(!attendsTimeslot)
-                    consecutiveClasses = 0;
-            }
-        }
-        for (int j = 0; j < data.n_of_students; j++)
-        { //students should not have a single class on a day
-            classesDay = 0;
-            for (int d = 0; d < 5; d++)
-            {   // for each day
-                classesDay = 0;               //number of classes per day
-                for(int t = 0; t < 9; t++)
-                {   // for each timeslot of the day
-                    for (int k = 0; k < timeslot_events.get(9*d+t).size(); k++)
-                    {
-                        if (data.student_events[j][timeslot_events.get(9*d+t).get(k)] == 1)
-                        {
-                            classesDay = classesDay + 1;
+                if (timeslot_events.containsKey(i))
+                    for (int k = 0; k < (timeslot_events.get(i)).size(); k++) {
+                        if (data.student_events[j][timeslot_events.get(i).get(k)] == 1) {
+                            attendsTimeslot = true;
+                            consecutiveClasses = consecutiveClasses + 1;
+                            if (consecutiveClasses > 2) {
+                                scv = scv + 1;
+                            }
                             break;
                         }
                     }
-                    if(classesDay > 1) // if the student is attending more than one class on that day
-                        break;	   // go to the next day
+                if (!attendsTimeslot)
+                    consecutiveClasses = 0;
+            }
+        }
+        for (int j = 0; j < data.n_of_students; j++) { //students should not have a single class on a day
+            classesDay = 0;
+            for (int d = 0; d < Definitions.N_OF_WORKING_DAYS; d++) {   // for each day
+                classesDay = 0;               //number of classes per day
+                for (int t = 0; t < Definitions.TIMESLOTS_PER_DAY ; t++) {   // for each timeslot of the day
+                    if (timeslot_events.containsKey(Definitions.TIMESLOTS_PER_DAY * d + t))
+                        for (int k = 0; k < timeslot_events.get(Definitions.TIMESLOTS_PER_DAY * d + t).size(); k++) {
+                            if (data.student_events[j][timeslot_events.get(Definitions.TIMESLOTS_PER_DAY * d + t).get(k)] == 1) {
+                                classesDay = classesDay + 1;
+                                break;            // it is attending one event in that timeslot, so break and see for the next timeslot
+                            }
+                        }
+
+                    if (classesDay > 1) // if the student is attending more than one class on that day
+                        break;       // go to the next day
                 }
-                if (classesDay == 1)
-                {
+                if (classesDay == 1) {
                     scv = scv + 1;
                 }
             }
@@ -169,54 +147,90 @@ public class Solution
 
     int computeHCV()
     {
+        hcv = 0;
+        int roomOverLap = 0;
+        int studentScrewed = 0;
+        for (int i = 0; i < data.n_of_events; i++) {
+            for (int j = i + 1; j < data.n_of_events; j++) {
+                if ((sln.elementAt(i).first == sln.elementAt(j).first) && (sln.elementAt(i).second == sln.elementAt(j).second)) { // only one class can be in each room at any timeslot
+                    hcv = hcv + 1;
+                    roomOverLap = roomOverLap + 1;
 
-        hcv = 0; // set hard constraint violations to zero to start with
-        // and count them
-        for (int i = 0; i < data.n_of_events; i++)
-        {
-            for (int j = i+1; j < data.n_of_events; j++)
-            {
-                if ((sln.elementAt(i).first == sln.elementAt(j).first) && (sln.elementAt(i).second == sln.elementAt(j).second))
-                { // only one class can be in each room at any timeslot
-                    hcv = hcv + 1;
                 }
-                if ((sln.elementAt(i).first == sln.elementAt(j).first) && (data.eventCorrelations[i][j] == 1))
-                {  // two events sharing students cannot be in the same timeslot
+                if ((sln.elementAt(i).first == sln.elementAt(j).first) && (data.eventCorrelations[i][j] == 1)) {  // two events sharing students cannot be in the same timeslot
                     hcv = hcv + 1;
+                    studentScrewed = studentScrewed + 1;
                 }
             }
-            System.out.println("timeslot = " + sln.elementAt(i).first + ", room =  " + sln.elementAt(i).second + " i = " + i);
-            if( data.possibleRooms[i][sln.elementAt(i).second]  == 0 )  // an event should take place in a suitable room
-                hcv = hcv + 1;
+            //System.out.println("Event = "+i+"timeslot = " + sln.elementAt(i).first + ", room =  " + sln.elementAt(i).second);
+            if (sln.elementAt(i).second != -1)
+                if (data.possibleRooms[i][sln.elementAt(i).second] == 0)  // an event should take place in a suitable room
+                    hcv = hcv + 1;
         }
-
+        //System.out.println("RoomOverLap = "+roomOverLap);
+        //System.out.println("Student is screwed = "+studentScrewed);
         return hcv;
     }
 
-    //compute hard constraint violations involving event e
-    private int eventHcv(int e)
+
+    void assignRooms(int t)
     {
-        int eHcv = 0; // set to zero hard constraint violations for event e
-        int t = sln.elementAt(e).first; // note the timeslot in which event e is
-        for (int i = 0; i < timeslot_events.get(t).size(); i++)
-        {
-            if ((timeslot_events.get(t).get(i)!=e))
-            {
-                if (sln.elementAt(e).second == sln.elementAt(timeslot_events.get(t).get(i)).second)
-                {
-                    eHcv = eHcv + 1; // adds up number of events sharing room and timeslot with the given one
-                    //cout << "room + timeslot in common "  <<eHcv <<" event " << i << endl;
-                }
-                if(data.eventCorrelations[e][timeslot_events.get(t).get(i)] == 1)
-                {
-                    eHcv = eHcv + 1;  // adds up number of incompatible( because of students in common) events in the same timeslot
-                    //cout << "students in common " << eHcv <<" event " << i << endl;
+//        System.out.println("timeslot " + t);
+        MaximumBipartite roomAllocator = new MaximumBipartite(this, t, data);
+        int[] result = roomAllocator.matchR;
+
+        for (int i = 0; i < data.n_of_rooms; i++) {
+            int event = result[i];
+            if (event != -1) {
+//                System.out.println("before t = " + this.sln.get(event).first
+  //                      + " r = " + this.sln.get(event).second);
+                Pair temporary = new Pair(t, i);
+                this.sln.set(event, temporary);
+                // System.out.println(event+" Alloc from result set "+i + ", ");
+            }
+        }
+        /*System.out.println("Inside solution after maxBp");
+        Control controlObj = new Control();
+        System.out.println(controlObj.computeHCV(this));*/
+
+        //System.out.println("timeslot = "+t+" = "+Arrays.toString(result));
+    }
+
+    int[] firstComeFirstServe(int timeslot)
+    {
+        int numberOfRooms = data.n_of_rooms;
+        int numberOfEvents = timeslot_events.get(timeslot).size();
+
+        int temporary[] = new int[numberOfRooms];
+
+        for (int i = 0; i < numberOfRooms; i++)
+            temporary[i] = -1;
+
+        for (int i = 0; i < numberOfRooms; i++) {
+            for (int j = 0; j < numberOfEvents; j++) {
+                //int eventToBeHeld = timeslot_events.get(timeslot).elementAt((int)(Math.random() * numberOfEvents));
+                int eventToBeHeld = timeslot_events.get(timeslot).elementAt(j);
+
+                if (data.possibleRooms[eventToBeHeld][i] == 1) {
+                    if (temporary[i] == -1) {
+                        boolean allReadyAllocated = false;
+                        for (int k = 0; k < i; k++) {
+                            if (temporary[k] == eventToBeHeld) {
+                                allReadyAllocated = true;
+                                break;
+                            }
+
+                        }
+
+                        if (!allReadyAllocated)
+                            temporary[i] = eventToBeHeld;
+                    }
                 }
             }
         }
-        // the suitable room hard constraint is taken care of by the assignroom routine
-        return eHcv;
+        return temporary;
     }
+
 
     //compute hard constraint violations that can be affected by moving event e from its timeslot
     private int eventAffectedHcv(int e)
@@ -392,17 +406,30 @@ public class Solution
         //move event e to timeslot t
         int tslot =  sln.elementAt(e).first;
         sln.elementAt(e).first = t;
-        
+
         Iterator i = timeslot_events.get(tslot).iterator();
-        while(i.hasNext()){
-            if( i.equals(e))
-            break;
+        int counter = 0;
+        while(i.hasNext())
+        {
+            counter = counter + 1;
+            if( i.next().equals(e) || counter >= timeslot_events.get(tslot).size())
+                break;
+
         }
         timeslot_events.get(tslot).remove(i); // erase event e from the original timeslot
-        timeslot_events.get(t).addElement(e); // and place it in timeslot t
+        if(timeslot_events.containsKey(t))
+        	timeslot_events.get(t).addElement(e); // and place it in timeslot t
+        else
+        {
+        	Vector<Integer> arg1 = new Vector<Integer>();
+        	arg1.addElement(e);
+			timeslot_events.put(t, arg1);
+        }
         // reorder in label order events in timeslot t
 
+//        System.out.println("Start Sort timeslot_events");
         Collections.sort(timeslot_events.get(t));
+//        System.out.println("Sorted timeslot_events");
 
         // reassign rooms to events in timeslot t
         assignRooms(t);
@@ -420,15 +447,17 @@ public class Solution
         Iterator i = timeslot_events.get(t).iterator();
 
         while(i.hasNext()){
-            if( i.equals(e1))
-            break;
+//        	i.next();
+            if( i.next().equals(e1))
+                break;
         }
         timeslot_events.get(t).remove(i);
         timeslot_events.get(t).addElement(e2);
         i = timeslot_events.get(sln.elementAt(e1).first).iterator();
         while(i.hasNext()){
-            if( i.equals(e2))
-            break;
+//        	i.next();
+            if( i.next().equals(e2))
+                break;
         }
         timeslot_events.get(sln.elementAt(e1).first).remove(i);
         timeslot_events.get(sln.elementAt(e1).first).addElement(e1);
@@ -436,7 +465,6 @@ public class Solution
         //sort(timeslot_events[t].begin(),timeslot_events[t].end());
         Collections.sort(timeslot_events.get(t));
         Collections.sort(timeslot_events.get(sln.get(e1).first));
-
         assignRooms( sln.elementAt(e1).first);
         assignRooms( sln.elementAt(e2).first);
     }
@@ -450,22 +478,25 @@ public class Solution
         sln.elementAt(e3).first = t;
         Iterator i = timeslot_events.get(t).iterator();
         while(i.hasNext()){
-            if(i.equals(e1))
-            break;
+//        	i.next();
+            if(i.next().equals(e1))
+                break;
         }
         timeslot_events.get(t).remove(i);
         timeslot_events.get(t).addElement(e3);
         i = timeslot_events.get(sln.elementAt(e1).first).iterator();
         while(i.hasNext()){
-            if( i.equals(e2))
-            break;
+//        	i.next();
+            if( i.next().equals(e2))
+                break;
         }
         timeslot_events.get(sln.elementAt(e1).first).remove(i);
         timeslot_events.get(sln.elementAt(e1).first).addElement(e1);
         i = timeslot_events.get(sln.elementAt(e2).first).iterator();
         while(i.hasNext()){
+        	i.next();
             if( i.equals(e3))
-            break;
+                break;
         }
         timeslot_events.get(sln.elementAt(e2).first).remove(i);
         timeslot_events.get(sln.elementAt(e2).first).addElement(e2);
@@ -483,39 +514,41 @@ public class Solution
     {
         //pick at random a type of move: 1, 2, or 3
         int moveType, e1;
-        moveType = (int)(rg.next()*3) + 1;
-        e1 = (int)(rg.next()*(data.n_of_events));
+        moveType = (int)(Math.random()*3) + 1;
+        e1 = (int)(Math.random()*(data.n_of_events));
         if(moveType == 1){  // perform move of type 1
-            int t = (int)(rg.next()*45);
+            int t = (int)(Math.random()*45);
             Move1( e1, t);
             //cout<< "event " << e1 << " in timeslot " << t << endl;
         }
         else if(moveType == 2)
         { // perform move of type 2
-            int e2 = (int)(rg.next()*(data.n_of_events));
+            int e2 = (int)(Math.random()*(data.n_of_events));
             while(e2 == e1) // take care of not swapping one event with itself
-                e2 = (int)(rg.next()*(data.n_of_events));
+                e2 = (int)(Math.random()*(data.n_of_events));
             Move2( e1, e2);
             // cout << "e1 "<< e1 << " e2 " << e2 << endl;
         }
         else{ // perform move of type 3
-            int e2 = (int)(rg.next()*(data.n_of_events));
+            int e2 = (int)(Math.random()*(data.n_of_events));
             while(e2 == e1)
-                e2 = (int)(rg.next()*(data.n_of_events));
-            int e3 = (int)(rg.next()*(data.n_of_events));
+                e2 = (int)(Math.random()*(data.n_of_events));
+            int e3 = (int)(Math.random()*(data.n_of_events));
             while(e3 == e1 || e3 == e2) // take care of having three distinct events
-                e3= (int)(rg.next()*(data.n_of_events));
+                e3= (int)(Math.random()*(data.n_of_events));
             //cout<<"e1 " << e1 << " e2 " << e2 << " e3 " << e3<< endl;
             Move3( e1, e2, e3);
         }
     }
 
-    void localSearch(int maxSteps)
+    void localSearch(int maxSteps,double Seconds)
     {
         //int maxSteps,
         double prob1 = 1.0;
         double prob2 = 1.0;
         double prob3 = 0.0;
+
+        long FinishTime = System.currentTimeMillis() + (long)(1000*Seconds);
 
         // perform local search with given time limit and probabilities for each type of move
         // timer.resetTime(); // reset time counter for the local search
@@ -526,26 +559,26 @@ public class Solution
 
         for(int i = 0; i < data.n_of_events; i++)
         { // scramble the list of events to obtain a random order
-            int j = (int)(rg.next()*data.n_of_events);
+            int j = (int)(Math.random()*data.n_of_events);
             int h = eventList[i];
             eventList[i] = eventList[j];
             eventList[j] = h;
         }
-	  /*cout <<"event list" <<endl;
-	  for(int i = 0 ; i< data.n_of_events; i++)
-	    cout<< eventList[i] << " ";
-	    cout << endl;*/
-
         int neighbourAffectedHcv = 0; // partial evaluation of neighbour solution hcv
         int neighbourScv = 0; // partial evaluation of neighbour solution scv
         int evCount = 0;     // counter of events considered
         int stepCount = 0; // set step counter to zero
         boolean foundbetter = false;
         computeFeasibility();
-        if(!feasible ){ // if the timetable is not feasible try to solve hcv
-            for( int i = 0; evCount < data.n_of_events; i = (i+1)% data.n_of_events){
-//	    if(timer.elapsedTime(Timer::VIRTUAL) > LS_limit || stepCount > maxSteps )
-//	       break;
+
+//        System.out.println("Computed Feasibility");
+
+        if(!feasible )
+        { // if the timetable is not feasible try to solve hcv
+            for( int i = 0; evCount < data.n_of_events; i = (i+1)% data.n_of_events)
+            {
+                if(stepCount > maxSteps ||System.currentTimeMillis()>FinishTime)
+                    break;
                 int currentHcv = eventHcv(eventList[i]);
                 if(currentHcv == 0 ){ // if the event on the list does not cause any hcv
                     evCount++; // increase the counter
@@ -553,16 +586,20 @@ public class Solution
                 }
                 // otherwise if the event in consideration caused hcv
                 int currentAffectedHcv;
-                int t_start = (int)(rg.next()*45); // try moves of type 1
+                int t_start = (int)(Math.random()*45); // try moves of type 1
                 int t_orig = sln.get(eventList[i]).first;
+
                 for(int h = 0, t = t_start; h < 45; t= (t+1)%45, h++)
                 {
-//	      if(timer.elapsedTime(Timer::VIRTUAL) > LS_limit || stepCount > maxSteps)
-//		break;
-                    if(rg.next() < prob1)
-                    { // with given probability
+                    if(stepCount > maxSteps ||System.currentTimeMillis()>FinishTime)
+                        break;
+
+                    if(Math.random() < prob1)
+                    {
+                        // with given probability
                         stepCount++;
-                        Solution neighbourSolution = new Solution( data, rg );
+                        //System.out.println("stepCount = "+stepCount);
+                        Solution neighbourSolution = new Solution( data );
                         neighbourSolution.copy( this );
                         //cout<< "event " << eventList[i] << " timeslot " << t << endl;
                         neighbourSolution.Move1(eventList[i],t);
@@ -579,20 +616,26 @@ public class Solution
                         neighbourSolution = null;
                     }
                 }
+
+//                System.out.println("Exisited Prob1");
+
                 if(foundbetter)
                 {
                     foundbetter = false;
                     continue;
                 }
+
                 if(prob2 != 0)
                 {
                     for(int j= (i+1)%data.n_of_events; j != i ;j = (j+1)%data.n_of_events){ // try moves of type 2
-//	      if(timer.elapsedTime(Timer::VIRTUAL) > LS_limit || stepCount > maxSteps)
-//		break;
-                        if(rg.next() < prob2)
+//                    	System.out.println("entered for");
+                        if(stepCount > maxSteps ||System.currentTimeMillis()>FinishTime)
+                            break;
+                        if(Math.random() < prob2)
                         { // with given probability
+//                        	System.out.println("inside if");
                             stepCount++;
-                            Solution neighbourSolution = new Solution( data, rg );
+                            Solution neighbourSolution = new Solution( data);
                             neighbourSolution.copy( this );
                             neighbourSolution.Move2(eventList[i],eventList[j]);
                             //cout<< "event " << eventList[i] << " second event " << eventList[j] << endl;
@@ -620,16 +663,16 @@ public class Solution
                 if(prob3 != 0)
                 {
                     for(int j= (i+1)%data.n_of_events; j != i; j = (j+1)%data.n_of_events){ // try moves of type 3
-//	      if(timer.elapsedTime(Timer::VIRTUAL) > LS_limit || stepCount > maxSteps)
-//		break;
+                        if( stepCount > maxSteps)
+                            break;
                         for(int k= (j+1)%data.n_of_events; k != i ; k = (k+1)%data.n_of_events){
-//		if(timer.elapsedTime(Timer::VIRTUAL) > LS_limit || stepCount > maxSteps)
-//		  break;
-                            if(rg.next() < prob3)
+                            if(stepCount > maxSteps ||System.currentTimeMillis()>FinishTime)
+                                break;
+                            if(Math.random() < prob3)
                             { // with given probability
                                 stepCount++;
                                 currentAffectedHcv = eventAffectedHcv(eventList[i]) + eventAffectedHcv(eventList[j]) + eventAffectedHcv(eventList[k]);
-                                Solution neighbourSolution = new Solution( data, rg );
+                                Solution neighbourSolution = new Solution( data);
                                 neighbourSolution.copy( this );
                                 neighbourSolution.Move3(eventList[i],eventList[j], eventList[k]); //try one of the to possible 3-cycle
                                 //cout<< "event " << eventList[i] << " second event " << eventList[j] << " third event "<< eventList[k] << endl;
@@ -646,13 +689,13 @@ public class Solution
                                 }
                                 neighbourSolution = null;
                             }
-//		if(timer.elapsedTime(Timer::VIRTUAL) > LS_limit || stepCount > maxSteps)
-//		  break;
-                            if(rg.next() < prob3)
+                            if( stepCount > maxSteps)
+                                break;
+                            if(Math.random() < prob3)
                             {  // with given probability
                                 stepCount++;
                                 currentAffectedHcv = eventAffectedHcv(eventList[i]) + eventAffectedHcv(eventList[k]) + eventAffectedHcv(eventList[j]);
-                                Solution neighbourSolution = new Solution( data, rg );
+                                Solution neighbourSolution = new Solution( data );
                                 neighbourSolution.copy( this );
                                 neighbourSolution.Move3(eventList[i],eventList[k], eventList[j]); //try one of the to possible 3-cycle
                                 //cout<< "event " << eventList[i] << " second event " << eventList[j] << " third event "<< eventList[k] << endl;
@@ -682,6 +725,9 @@ public class Solution
                 evCount++;
             }
         }
+
+//        System.out.println(" if(!feasible ) terminated");
+
         computeFeasibility();
         if(feasible)
         { // if the timetable is feasible
@@ -689,8 +735,8 @@ public class Solution
             int neighbourHcv;
             for( int i = 0; evCount < data.n_of_events; i = (i+1)% data.n_of_events)
             { //go through the events in the list
-//	      if(stepCount > maxSteps || timer.elapsedTime(Timer::VIRTUAL) > LS_limit)
-//		break;
+                if(stepCount > maxSteps ||System.currentTimeMillis()>FinishTime)
+                    break;
                 int currentScv = eventScv(eventList[i]);
                 //cout << "event " << eventList[i] << " cost " << currentScv<<endl;
                 if(currentScv == 0 ){ // if there are no scv
@@ -698,13 +744,13 @@ public class Solution
                     continue;  //go to the next event
                 }
                 // otherwise try all the possible moves
-                int t_start = (int)(rg.next()*45); // try moves of type 1
+                int t_start = (int)(Math.random()*45); // try moves of type 1
                 for(int h= 0, t = t_start; h < 45; t= (t+1)%45, h++){
-//		if(timer.elapsedTime(Timer::VIRTUAL) > LS_limit || stepCount > maxSteps)
-//		  break;
-                    if(rg.next() < prob1){ // each with given propability
+                    if(stepCount > maxSteps ||System.currentTimeMillis()>FinishTime)
+                        break;
+                    if(Math.random() < prob1){ // each with given propability
                         stepCount++;
-                        Solution neighbourSolution = new Solution( data, rg );
+                        Solution neighbourSolution = new Solution( data);
                         neighbourSolution.copy( this );
                         neighbourSolution.Move1(eventList[i],t);
                         //cout<< "event " << eventList[i] << " timeslot " << t << endl;
@@ -734,12 +780,12 @@ public class Solution
                 }
                 if(prob2 != 0){
                     for(int j= (i+1)%data.n_of_events; j != i ;j = (j+1)%data.n_of_events){ //try moves of type 2
-//		if(timer.elapsedTime(Timer::VIRTUAL) > LS_limit || stepCount > maxSteps)
-//		  break;
-                        if(rg.next() < prob2)
+                    	if(stepCount > maxSteps ||System.currentTimeMillis()>FinishTime)
+                            break;
+                        if(Math.random() < prob2)
                         { // with the given probability
                             stepCount++;
-                            Solution neighbourSolution = new Solution( data, rg );
+                            Solution neighbourSolution = new Solution( data);
                             neighbourSolution.copy( this );
                             //cout<< "event " << eventList[i] << " second event " << eventList[j] << endl;
                             neighbourSolution.Move2(eventList[i],eventList[j]);
@@ -771,14 +817,14 @@ public class Solution
                 }
                 if(prob3 != 0){
                     for(int j= (i+1)%data.n_of_events; j != i; j = (j+1)%data.n_of_events){ //try moves of type 3
-//		if(timer.elapsedTime(Timer::VIRTUAL) > LS_limit || stepCount > maxSteps)
-//		  break;
+                        if(stepCount > maxSteps ||System.currentTimeMillis()>FinishTime)
+                            break;
                         for(int k= (j+1)%data.n_of_events; k != i ; k = (k+1)%data.n_of_events){
-//		  if(timer.elapsedTime(Timer::VIRTUAL) > LS_limit || stepCount > maxSteps)
-//		    break;
-                            if(rg.next() < prob3){ // with given probability try one of the 2 possibles 3-cycles
+                            if(stepCount > maxSteps ||System.currentTimeMillis()>FinishTime)
+                                break;
+                            if(Math.random() < prob3){ // with given probability try one of the 2 possibles 3-cycles
                                 stepCount++;
-                                Solution neighbourSolution = new Solution( data, rg );
+                                Solution neighbourSolution = new Solution( data);
                                 neighbourSolution.copy( this );
                                 neighbourSolution.Move3(eventList[i],eventList[j], eventList[k]);
                                 // cout<< "event " << eventList[i] << " second event " << eventList[j] << " third event "<< eventList[k] << endl;
@@ -801,11 +847,11 @@ public class Solution
                                 }
                                 neighbourSolution = null;
                             }
-//		  if(timer.elapsedTime(Timer::VIRTUAL) > LS_limit || stepCount > maxSteps)
-//		    break;
-                            if(rg.next() < prob3){ // with the same probability try the other possible 3-cycle for the same 3 events
+                            if(stepCount > maxSteps ||System.currentTimeMillis()>FinishTime)
+                                break;
+                            if(Math.random() < prob3){ // with the same probability try the other possible 3-cycle for the same 3 events
                                 stepCount++;
-                                Solution neighbourSolution = new Solution( data, rg );
+                                Solution neighbourSolution = new Solution( data );
                                 neighbourSolution.copy( this );
                                 neighbourSolution.Move3(eventList[i],eventList[k], eventList[j]);
                                 // cout<< "event " << eventList[i] << " second event " << eventList[k] << " third event "<< eventList[j] << endl;
@@ -842,174 +888,27 @@ public class Solution
         }
     }
 
-    // assign rooms to events in timeslot t
-    void assignRooms(int t)
+    private int eventHcv(int e)
     {
-    	System.out.println("Inside assignRooms");
-    	if(val!=null)
-    		val.clear();
-    	if(dad!=null)
-    		dad.clear();
-        Vector<Integer> assigned = new Vector<>(); // vector keeping track for each event if it is assigned or not
-        int lessBusy= 0; // room occupied by the fewest events
-        int busy[] = new int[data.n_of_rooms]; // number of events in a room
-        int N = (int)timeslot_events.get(t).size();
-        int V = N+2+data.n_of_rooms;
-//        System.out.println(V + " " + N + " " + data.n_of_rooms);
-        // initialize the bipartite graph
-        size = new int[V+1][V+1];
-        flow = new int[V+1][V+1];
-
-        for (int i = 0; i <= V; i++)
+        int eHcv = 0; // set to zero hard constraint violations for event e
+        int t = sln.elementAt(e).first; // note the timeslot in which event e is
+        for (int i = 0; i < timeslot_events.get(t).size(); i++)
         {
-            for (int j = 0; j <= V; j++)
+            if ((timeslot_events.get(t).get(i)!=e))
             {
-                size[i][j] = 0;
-                flow[i][j] = 0;
-            }
-        }
-        for(int i =0; i < N; i++){
-            size[1][i+2] = 1;
-            size[i+2][1] = -1;
-            for(int j = 0; j < data.n_of_rooms; j++)
-                if(data.possibleRooms[timeslot_events.get(t).get(i)][j] == 1)
+                if (sln.elementAt(e).second == sln.elementAt(timeslot_events.get(t).get(i)).second)
                 {
-                    size[i+2][N+j+2] = 1;
-                    size[N+j+2][i+2] = -1;
-                    size[N+j+2][V] = 1;
-                    size[V][N+j+2] = -1;
+                    eHcv = eHcv + 1; // adds up number of events sharing room and timeslot with the given one
+                    //cout << "room + timeslot in common "  <<eHcv <<" event " << i << endl;
                 }
-        }
-        maxMatching(V); // apply the matching algorithm
-        for(int i =0; i < N; i++)
-        { // check if there are unplaced events
-            assigned.addElement(0);
-            for(int j = 0; j < data.n_of_rooms; j++)
-            {
-                if(flow[i+2][N+j+2] == 1){
-                    sln.get(timeslot_events.get(t).get(i)).second = j;
-                    // cout << "room " << j << endl;
-                    assigned.set(i,1);
-                    busy[j] =+ 1;
+                if(data.eventCorrelations[e][timeslot_events.get(t).get(i)] == 1)
+                {
+                    eHcv = eHcv + 1;  // adds up number of incompatible( because of students in common) events in the same timeslot
+                    //cout << "students in common " << eHcv <<" event " << i << endl;
                 }
             }
         }
-        for(int i = 0; i < N; i++)
-        { // place the unplaced events in the less busy possible rooms
-            if(assigned.get(i) == 0)
-            {
-                for(int j = 0; j < data.n_of_rooms; j++)
-                {
-                    if(data.possibleRooms[timeslot_events.get(t).get(i)][j] == 1)
-                    {
-                        lessBusy = j;
-                        break;
-                    }
-                }
-
-                for(int j = 0; j < data.n_of_rooms; j++)
-                {
-                    if(data.possibleRooms[timeslot_events.get(t).get(i)][j] == 1)
-                    {
-                        if(busy[j] < busy[lessBusy])
-                            lessBusy = j;
-                    }
-                }
-                sln.get(timeslot_events.get(t).get(i)).second = lessBusy;
-            }
-        }
-        size = null; // don't forget to free the memory
-        flow = null;
-        System.out.println("Leaving");
+        // the suitable room hard constraint is taken care of by the assignroom routine
+        return eHcv;
     }
-
-    // maximum matching algorithm
-    private void maxMatching(int V)
-    {
-        while(networkFlow(V))
-        {
-//            System.out.println("OPO");
-            int x = dad.elementAt(V);
-            int y = V;
-            while( x != 0)
-            {
-                flow[x][y] = flow[x][y] + val.elementAt(V);
-                flow[y][x] = - flow[x][y];
-                y = x;
-                x = dad.elementAt(y);
-            }
-        }
-    }
-
-    //network flow algorithm
-    private boolean networkFlow(int V)
-    {
-//    	return false;
-        int k = 0;
-        int t = 0;
-        int min = 0;
-        int priority = 0;
-
-        if(!val.isEmpty())
-            val.clear();
-
-        if(!dad.isEmpty())
-            dad.clear();
-
-        for( k = 1; k <= V+1; k++)
-        {
-            val.addElement( -10); // 10 unseen value
-            dad.addElement( 0);
-        }
-
-        val.insertElementAt(-11,0);  //sentinel
-        val.insertElementAt(-9, 1); // the source node
-        
-        for( k = 1; k != 0; k = min, min = 0)
-        {
-            int temp = 10 + val.elementAt(k);
-            //System.out.println("Old value " + val.elementAt(k));
-            val.insertElementAt(temp,k);
-
-            System.out.println("val " + k + " = " + val.elementAt(k));
-
-            if(val.elementAt(k) == 0)
-                return false;
-
-            if( k == V)
-                return (Math.random()%2==0)?true:false;
-
-            for(t = 1; t <= V; t++)
-            {
-                System.out.println(" val of t at " + t + " = " + val.elementAt(t));
-
-                if(val.elementAt(t) < 0)
-                {
-                    System.out.println("flow [" + k +"][" + t + "] = "+ flow[k][t]);
-                    priority = - flow[k][t];
-                    if( size[k][t] > 0)
-                        priority += size[k][t];
-
-                    if(priority > val.elementAt(k))
-                        priority = val.elementAt(k);
-
-                    priority = 10 - priority;
-                    if(size[k][t] > 0 && val.elementAt(t) < - priority)
-                    {
-                        val.insertElementAt(-priority, t);
-                        dad.insertElementAt(k, t);
-                    }
-
-                    if(val.elementAt(t) > val.elementAt(min))
-                        min = t;
-                }
-            }
-//            break;
-        }
-        return false;
-    }
-
-
-
-
 }

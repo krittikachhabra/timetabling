@@ -8,14 +8,12 @@ public class MMAsProblem extends Problem
     double evap;
     double phe_max;
     double phe_min;
-    double alpha;
     double[][] event_timeslot_pheromone; // matrix keeping pheromone between events and timeslots
     ArrayList<Integer> sorted_event_list = new ArrayList<Integer>();// vector keeping sorted lists of events
 
     public MMAsProblem(double evap, double phe_min) throws IOException
     {
-    	super();
-    	System.out.println("MMAsProblem called");
+        super();
         event_timeslot_pheromone = new double[n_of_events][Definitions.N_OF_TIMESLOTS];
         this.evap = evap;
         this.phe_min = phe_min;
@@ -26,12 +24,9 @@ public class MMAsProblem extends Problem
         else
             phe_max = 999999;
 
-        // creating a set of pre-sorted event lists
-
-        // sorting events based on level of correlations
         int event_correlation[] = new int[n_of_events];
-        for (int i = 0; i < n_of_events; i++) {
-            // summing up the correlations for each event
+        for (int i = 0; i < n_of_events; i++)
+        {
             event_correlation[i] = 0;
             for (int j = 0; j < n_of_events; j++)
                 event_correlation[i] += eventCorrelations[i][j];
@@ -39,7 +34,6 @@ public class MMAsProblem extends Problem
 
         for (int i = 0; i < n_of_events; i++)
         {
-            // sorting the list
             int max_correlation = -1;
             int event_index = -1;
             for (int j = 0; j < n_of_events; j++)
@@ -50,8 +44,9 @@ public class MMAsProblem extends Problem
                     event_index = j;
                 }
             }
-            event_correlation[event_index] = -2;
+            event_correlation[event_index] = -1;
             sorted_event_list.add(event_index);
+
         }
     }
 
@@ -87,9 +82,14 @@ public class MMAsProblem extends Problem
             for (int j = 0; j < Definitions.N_OF_TIMESLOTS; j++)
             {
                 if (event_timeslot_pheromone[i][j] < phe_min)
+                {
                     event_timeslot_pheromone[i][j] = phe_min;
+                }
+
                 if (event_timeslot_pheromone[i][j] > phe_max)
+                {
                     event_timeslot_pheromone[i][j] = phe_max;
+                }
             }
         }
     }

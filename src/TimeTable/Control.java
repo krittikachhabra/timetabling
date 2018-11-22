@@ -1,35 +1,24 @@
 package TimeTable;
-import java.io.*;
-import java.util.*;
-import java.util.HashMap;
 
 public class Control
 {
-    Map< String, String > parameters = new HashMap<>();
-
     int nrTry, maxTry;
     boolean feasible;
-    int currentScv;
     int bestScv;
     int bestEvaluation;
-    int seed;
-    double timeLimit;
-    int problemType;
-    int maxSteps;
-    double LS_limit;
-    double prob1, prob2, prob3;
+    int bestHCV = Integer.MAX_VALUE;
 
-    Control()throws IOException
+    public Solution BestSolution;
+
+    Control()
     {
-    	System.out.println("Control called");
-        File file = new File("C:\\Users\\Krittika\\Desktop\\test.txt");
-        BufferedReader in = new BufferedReader(new FileReader(file));
         nrTry = 0;
         maxTry = Definitions.DEFAULT_MAX_STEPS;
     }
 
     void setCurrentCost(Solution currentSolution )
     {
+        currentSolution.computeScv();
         int currentScv = currentSolution.scv;
 
         if( currentSolution.feasible && currentScv < bestScv )
@@ -47,29 +36,95 @@ public class Control
         }
     }
 
-    void endTry(Solution bestSolution) {
-        System.out.println("begin solution " + nrTry);
-
+    void endTry(Solution bestSolution)
+    {
+        TestOutput test = new TestOutput();
+        test.printSln(bestSolution);
         if (bestSolution.feasible) {
             System.out.println("feasible: evaluation function = " + bestSolution.scv);
-            for (int i = 0; i < bestSolution.data.n_of_events; i++)
-                System.out.println("fdfh"+bestSolution.sln.get(i).first);
-            System.out.println("This " + bestSolution.data.n_of_events);
-            for (int i = 0; i < bestSolution.data.n_of_events; i++)
-                System.out.println("fdfh"+bestSolution.sln.get(i).second);
+            BestSolution = bestSolution;
         }
-        else {
-            System.out.println("unfeasible: evaluation function = " + (bestSolution.computeHCV() * 1000000) + bestSolution.computeScv());
+
+        else
+        {
+            int currentHCV = bestSolution.computeHCV();
+
+            if(/*bestHCV > currentHCV */ true) {
+                bestHCV = currentHCV;
+                System.out.println("\n"+nrTry + " : HCV = "+currentHCV);
+                //+"\tSCV = "+bestSolution.computeScv());
+                computeHCV(bestSolution);
+            }
+
+            /*if(nrTry % 10 == 0)
+            {
+                System.out.println(+nrTry + " : HCV = " + currentHCV);
+                //printSolution(bestSolution);
+            }*/
         }
     }
 
-    int getSeed() { return seed;}
     boolean triesLeft() { return ( nrTry < maxTry ); }
+
     void beginTry()
     {
-        System.out.println("begin try " +(++nrTry));
+        ++nrTry;
         feasible = false;
         bestScv = Integer.MAX_VALUE;
         bestEvaluation = Integer.MAX_VALUE;
+    }
+
+    void printSolution(Solution bestSolution)
+    {
+        for(int i = 0 ; i < bestSolution.data.n_of_events ; i++)
+                {
+                    System.out.println("Event = "+i+" Time = "+bestSolution.sln.elementAt(i).first+
+                            " Room = "+bestSolution.sln.elementAt(i).second);
+                }
+
+    }
+
+    int computeHCV(Solution bestSolution)
+    {
+        int hcv = 0;
+        int roomOverLap = 0;
+        int studentScrewed = 0;
+        int roomScrewed = 0;
+        for (int i = 0; i < bestSolution.data.n_of_events; i++)
+        {
+            for (int j = i+1; j < bestSolution.data.n_of_events; j++)
+            {
+                if ( (bestSolution.sln.elementAt(i).second != -1 ) &&
+                        (bestSolution.sln.elementAt(i).first == bestSolution.sln.elementAt(j).first) && (bestSolution.sln.elementAt(i).second == bestSolution.sln.elementAt(j).second))
+                { // only one class can be in each room at any timeslot
+                    hcv = hcv + 1;
+//                    System.out.print(i + " event overlapped with " + j + " ");
+//                    System.out.print(bestSolution.sln.elementAt(i).first + " timeSlot " +
+//                            bestSolution.sln.elementAt(i).second + " room, and ");
+//                    System.out.println(bestSolution.sln.elementAt(j).first + " timeSlot " +
+//                            bestSolution.sln.elementAt(j).second + " room");
+//                    System.out.print("Timeslot event " + bestSolution.sln.elementAt(j).first + " : ");
+//                    System.out.println(bestSolution.timeslot_events.get(bestSolution.sln.elementAt(j).first));
+                    roomOverLap = roomOverLap + 1;
+
+                }
+                if ((bestSolution.sln.elementAt(i).first == bestSolution.sln.elementAt(j).first) && (bestSolution.data.eventCorrelations[i][j] == 1))
+                {  // two events sharing students cannot be in the same timeslot
+                    hcv = hcv + 1;
+                    studentScrewed = studentScrewed + 1;
+                }
+            }
+            //System.out.println("Event = "+i+"timeslot = " + sln.elementAt(i).first + ", room =  " + sln.elementAt(i).second);
+            if(bestSolution.sln.elementAt(i).second != -1)
+                if( bestSolution.data.possibleRooms[i][bestSolution.sln.elementAt(i).second]  == 0 )
+                    // an event should take place in a suitable room
+                {
+                    hcv = hcv + 1;
+                }
+        }
+        System.out.println("RoomOverLap = "+roomOverLap);
+        System.out.println("Student is screwed = "+studentScrewed);
+        System.out.println("Room is screwed = "+(hcv - studentScrewed - roomOverLap));
+        return hcv;
     }
 }

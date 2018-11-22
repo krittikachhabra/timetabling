@@ -18,7 +18,7 @@ public class Problem
     public int[][] possibleRooms; // matrix keeping pre-processed information on which room are suitable for each event
     public int[] studentNumber;
 
-    
+
     private void Room(BufferedReader in)throws IOException
     {
         roomSize = new int[n_of_rooms];
@@ -142,8 +142,7 @@ public class Problem
 
     public Problem()throws IOException
     {
-    	System.out.println("Problem called");
-        String FilePath = "C:\\Users\\Krittika\\Desktop\\test.txt";
+        String FilePath = "resources/test.txt";
         File file = new File(FilePath);
         BufferedReader in = new BufferedReader(new FileReader(file));
         n_of_events = Integer.parseInt(in.readLine());
@@ -151,7 +150,6 @@ public class Problem
         n_of_features = Integer.parseInt(in.readLine());
         n_of_students = Integer.parseInt(in.readLine());
 
-        System.out.println("Something "+n_of_events + " " + n_of_rooms + " " + n_of_features + " " + n_of_students);
         Room(in);
         StudentEvent(in);
         StudentNumber();
