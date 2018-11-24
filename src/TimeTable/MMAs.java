@@ -40,7 +40,7 @@ public class MMAs
                     ant[i].run();
                 }
 
-                int iop = poop .computeHCV(best_solution);
+//                int iop = poop .computeHCV(best_solution);
                 problem.evaporatePheromone();
 
                 int best_fitness = 99999;
@@ -54,12 +54,9 @@ public class MMAs
                         ant_idx = i;
                     }
                 }
+
 //                ant[ant_idx].solution.localSearch(100,2);
-                int ui = poop.computeHCV(ant[ant_idx].solution);
-
-                /*System.out.println("Before statistics for best solution");
-                System.out.println(control.computeHCV(best_solution));*/
-
+                
                 ant[ant_idx].solution.computeFeasibility();
                 if (ant[ant_idx].solution.feasible)
                 {
@@ -91,12 +88,9 @@ public class MMAs
                 ant[ant_idx].depositPheromone();
                 ant[ant_idx].solution = tmp_solution;
 
-                /*System.out.println("After statistics for best solution");
-                System.out.println(control.computeHCV(best_solution));*/
             }
 
             control.endTry(best_solution);
-            System.exit(0);
         }
     }
 }

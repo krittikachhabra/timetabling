@@ -38,8 +38,6 @@ public class Control
 
     void endTry(Solution bestSolution)
     {
-        TestOutput test = new TestOutput();
-        test.printSln(bestSolution);
         if (bestSolution.feasible) {
             System.out.println("feasible: evaluation function = " + bestSolution.scv);
             BestSolution = bestSolution;
@@ -49,10 +47,9 @@ public class Control
         {
             int currentHCV = bestSolution.computeHCV();
 
-            if(/*bestHCV > currentHCV */ true) {
+            if(bestHCV > currentHCV ) {
                 bestHCV = currentHCV;
                 System.out.println("\n"+nrTry + " : HCV = "+currentHCV);
-                //+"\tSCV = "+bestSolution.computeScv());
                 computeHCV(bestSolution);
             }
 
@@ -98,13 +95,6 @@ public class Control
                         (bestSolution.sln.elementAt(i).first == bestSolution.sln.elementAt(j).first) && (bestSolution.sln.elementAt(i).second == bestSolution.sln.elementAt(j).second))
                 { // only one class can be in each room at any timeslot
                     hcv = hcv + 1;
-//                    System.out.print(i + " event overlapped with " + j + " ");
-//                    System.out.print(bestSolution.sln.elementAt(i).first + " timeSlot " +
-//                            bestSolution.sln.elementAt(i).second + " room, and ");
-//                    System.out.println(bestSolution.sln.elementAt(j).first + " timeSlot " +
-//                            bestSolution.sln.elementAt(j).second + " room");
-//                    System.out.print("Timeslot event " + bestSolution.sln.elementAt(j).first + " : ");
-//                    System.out.println(bestSolution.timeslot_events.get(bestSolution.sln.elementAt(j).first));
                     roomOverLap = roomOverLap + 1;
 
                 }

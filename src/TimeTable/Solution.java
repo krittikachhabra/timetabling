@@ -152,7 +152,8 @@ public class Solution extends Thread
         int studentScrewed = 0;
         for (int i = 0; i < data.n_of_events; i++) {
             for (int j = i + 1; j < data.n_of_events; j++) {
-                if ((sln.elementAt(i).first == sln.elementAt(j).first) && (sln.elementAt(i).second == sln.elementAt(j).second)) { // only one class can be in each room at any timeslot
+            	if ( (sln.elementAt(i).second != -1 ) &&
+                (sln.elementAt(i).first == sln.elementAt(j).first) && (sln.elementAt(i).second == sln.elementAt(j).second)) { // only one class can be in each room at any timeslot
                     hcv = hcv + 1;
                     roomOverLap = roomOverLap + 1;
 
@@ -167,8 +168,9 @@ public class Solution extends Thread
                 if (data.possibleRooms[i][sln.elementAt(i).second] == 0)  // an event should take place in a suitable room
                     hcv = hcv + 1;
         }
-        //System.out.println("RoomOverLap = "+roomOverLap);
-        //System.out.println("Student is screwed = "+studentScrewed);
+//        System.out.println("\n\nRoomOverLap = "+roomOverLap);
+//        System.out.println("Student is screwed = "+studentScrewed);
+//        System.out.println("Room is screwed = "+(hcv - studentScrewed - roomOverLap));
         return hcv;
     }
 
