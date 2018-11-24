@@ -68,6 +68,7 @@ public class Ant extends Thread
         for (int i=0;i<problem.n_of_events;i++)
         {
             int timeslot = solution.sln.get(i).first;
+//            System.out.println(i + " " + timeslot + " this is it.");
             problem.event_timeslot_pheromone[i][timeslot] += 1.0;
         }
     }

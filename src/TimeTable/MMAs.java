@@ -1,6 +1,7 @@
 package TimeTable;
 
 import java.io.IOException;
+import java.io.PrintStream;
 
 public class MMAs
 {
@@ -32,15 +33,20 @@ public class MMAs
             while ((System.currentTimeMillis() - startTime) < 5000)
             {
 
-                Control poop = new Control();
                 for (int i=0;i<n_of_ants;i++)
                 {
                     ant[i] = new Ant(problem);
-                    //ant[i].start();
-                    ant[i].run();
+                    ant[i].start();
+                    try {
+                    	ant[i].join();
+                    	}
+                    catch(Exception e)
+                    {
+                    	e.printStackTrace();
+                    }
+//                    ant[i].run();
                 }
 
-//                int iop = poop .computeHCV(best_solution);
                 problem.evaporatePheromone();
 
                 int best_fitness = 99999;
