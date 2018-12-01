@@ -407,20 +407,33 @@ public class Solution extends Thread
     {
         //move event e to timeslot t
         int tslot =  sln.elementAt(e).first;
-        sln.elementAt(e).first = t;
+        Pair tmp = new Pair(t,sln.elementAt(e).second); 
+//        sln.elementAt(e).first = t;
+        sln.set(e, tmp);
+
 
         Iterator i = timeslot_events.get(tslot).iterator();
         int counter = 0;
-        while(i.hasNext())
+//        boolean found = false;
+        
+        /*while(i.hasNext())
         {
             counter = counter + 1;
             if( i.next().equals(e) || counter >= timeslot_events.get(tslot).size())
                 break;
 
+        }*/
+        
+        for(int lc=0;lc<timeslot_events.get(tslot).size();lc++) {
+            if(timeslot_events.get(tslot).elementAt(lc) == e) {
+                counter  = lc;
+                break;
+            }
         }
-        timeslot_events.get(tslot).remove(i); // erase event e from the original timeslot
+        
+        timeslot_events.get(tslot).remove(counter);    // remove event e from the original timeslot
         if(timeslot_events.containsKey(t))
-        	timeslot_events.get(t).addElement(e); // and place it in timeslot t
+        	timeslot_events.get(t).addElement(e);   // and place it in timeslot t
         else
         {
         	Vector<Integer> arg1 = new Vector<Integer>();
@@ -444,24 +457,52 @@ public class Solution extends Thread
     {
         //swap timeslots between event e1 and event e2
         int t = sln.elementAt(e1).first;
-        sln.elementAt(e1).first = sln.elementAt(e2).first;
-        sln.elementAt(e2).first = t;
+        /*sln.elementAt(e1).first = sln.elementAt(e2).first;
+        sln.elementAt(e2).first = t;*/
+        
+        
+        Pair tmp1 = new Pair(sln.elementAt(e2).first,sln.elementAt(e1).second); 
+        Pair tmp2 = new Pair(t,sln.elementAt(e2).second); 
+        sln.set(e1, tmp1);
+        sln.set(e2, tmp2);
         Iterator i = timeslot_events.get(t).iterator();
 
-        while(i.hasNext()){
+        /*while(i.hasNext()){       // look for the iterator of e1 in the vector
 //        	i.next();
             if( i.next().equals(e1))
                 break;
+        }*/
+        
+        
+        // look for the index of e1 in the vector
+        int counter = -1;
+        for(int lc=0;lc<timeslot_events.get(t).size();lc++) {
+            if(timeslot_events.get(t).elementAt(lc) == e1) {
+                counter  = lc;
+                break;
+            }
         }
-        timeslot_events.get(t).remove(i);
+        
+        
+        timeslot_events.get(t).remove(counter);
         timeslot_events.get(t).addElement(e2);
         i = timeslot_events.get(sln.elementAt(e1).first).iterator();
-        while(i.hasNext()){
+        
+        /*while(i.hasNext()){
 //        	i.next();
             if( i.next().equals(e2))
                 break;
+        }*/
+        
+        counter = -1;
+        for(int lc=0;lc<timeslot_events.get(sln.elementAt(e1).first).size();lc++) {
+            if(timeslot_events.get(sln.elementAt(e1).first).elementAt(lc) == e2) {
+                counter  = lc;
+                break;
+            }
         }
-        timeslot_events.get(sln.elementAt(e1).first).remove(i);
+        
+        timeslot_events.get(sln.elementAt(e1).first).remove(counter);
         timeslot_events.get(sln.elementAt(e1).first).addElement(e1);
 
         //sort(timeslot_events[t].begin(),timeslot_events[t].end());
@@ -475,41 +516,79 @@ public class Solution extends Thread
     {
         // permute event e1, e2, and e3 in a 3-cycle
         int t = sln.elementAt(e1).first;
-        sln.elementAt(e1).first = sln.elementAt(e2).first;
+        /*sln.elementAt(e1).first = sln.elementAt(e2).first;
         sln.elementAt(e2).first = sln.elementAt(e3).first;
-        sln.elementAt(e3).first = t;
+        sln.elementAt(e3).first = t;*/
+        
+        Pair tmp1 = new Pair(sln.elementAt(e2).first, sln.elementAt(e1).second);
+        Pair tmp2 = new Pair(sln.elementAt(e3).first, sln.elementAt(e2).second);
+        Pair tmp3 = new Pair(sln.elementAt(e1).first, sln.elementAt(e3).second);
+        
+        sln.set(e3, tmp3);
+        sln.set(e2, tmp2);
+        sln.set(e1, tmp1);
+        
         Iterator i = timeslot_events.get(t).iterator();
-        while(i.hasNext()){
+        /*while(i.hasNext()){
 //        	i.next();
             if(i.next().equals(e1))
                 break;
+        }*/
+        
+        int counter = -1;
+        for(int lc=0;lc<timeslot_events.get(t).size();lc++) {
+            if(timeslot_events.get(t).elementAt(lc) == e1) {
+                counter  = lc;
+                break;
+            }
         }
-        timeslot_events.get(t).remove(i);
+        
+        timeslot_events.get(t).remove(counter);
         timeslot_events.get(t).addElement(e3);
-        i = timeslot_events.get(sln.elementAt(e1).first).iterator();
+        
+        /*i = timeslot_events.get(sln.elementAt(e1).first).iterator();
         while(i.hasNext()){
 //        	i.next();
             if( i.next().equals(e2))
                 break;
+        }*/
+        
+        counter = -1;
+        for(int lc=0;lc<timeslot_events.get(sln.elementAt(e1).first).size();lc++) {
+            if(timeslot_events.get(sln.elementAt(e1).first).elementAt(lc) == e2) {
+                counter  = lc;
+                break;
+            }
         }
-        timeslot_events.get(sln.elementAt(e1).first).remove(i);
+        
+        timeslot_events.get(sln.elementAt(e1).first).remove(counter);
         timeslot_events.get(sln.elementAt(e1).first).addElement(e1);
-        i = timeslot_events.get(sln.elementAt(e2).first).iterator();
+        
+        /*i = timeslot_events.get(sln.elementAt(e2).first).iterator();
         while(i.hasNext()){
         	i.next();
             if( i.equals(e3))
                 break;
+        }*/
+        
+        counter = -1;
+        for(int lc=0;lc<timeslot_events.get(sln.elementAt(e2).first).size();lc++) {
+            if(timeslot_events.get(sln.elementAt(e2).first).elementAt(lc) == e3) {
+                counter  = lc;
+                break;
+            }
         }
-        timeslot_events.get(sln.elementAt(e2).first).remove(i);
+        
+        timeslot_events.get(sln.elementAt(e2).first).remove(counter);
         timeslot_events.get(sln.elementAt(e2).first).addElement(e2);
 
         Collections.sort(timeslot_events.get(sln.get(e1).first));
         Collections.sort(timeslot_events.get(sln.get(e2).first));
         Collections.sort(timeslot_events.get(sln.get(e3).first));
 
-        assignRooms( sln.get(e1).first);
-        assignRooms( sln.get(e2).first);
-        assignRooms( sln.get(e3).first);
+        assignRooms(sln.get(e1).first);
+        assignRooms(sln.get(e2).first);
+        assignRooms(sln.get(e3).first);
     }
 
     void randomMove()

@@ -61,7 +61,7 @@ public class MMAs
                     }
                 }
 
-//                ant[ant_idx].solution.localSearch(100,2);
+                ant[ant_idx].solution.localSearch(100,2);
                 
                 ant[ant_idx].solution.computeFeasibility();
                 if (ant[ant_idx].solution.feasible)
@@ -97,6 +97,7 @@ public class MMAs
             }
 
             control.endTry(best_solution);
+            
         }
     }
 }
