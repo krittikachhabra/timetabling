@@ -18,9 +18,12 @@ public class MMAs
         Control control = new Control();
 
         Solution best_solution = new Solution(problem);
-
+        int cnt = 1;
         while (control.triesLeft())
         {
+            System.out.println("try :" + cnt);
+            cnt++;
+
             control.beginTry();
             problem.pheromoneReset();
 

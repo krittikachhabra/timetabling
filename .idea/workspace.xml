@@ -2,29 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3d7fd6f2-1b01-436f-a78b-a33dcc90a7d1" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/TimeTable_n.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/TimeTable/Ant.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/TimeTable/Ant.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/TimeTable/Control.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/TimeTable/Control.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/TimeTable/Definitions.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/TimeTable/Definitions.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/TimeTable/MMAs.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/TimeTable/MMAs.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/TimeTable/MMAsProblem.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/TimeTable/MMAsProblem.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/TimeTable/MaximumBipartite.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/TimeTable/MaximumBipartite.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/TimeTable/Pair.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/TimeTable/Pair.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/TimeTable/Problem.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/TimeTable/Problem.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/TimeTable/Solution.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/TimeTable/Solution.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/TimeTable/TestOutput.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/TimeTable/TestOutput.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/TimeTable/example.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/TimeTable/example.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/TimeTable/tryit.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/TimeTable/tryit.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/TimeTable/tryit2.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/TimeTable/tryit2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/TimeTable/Control.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/TimeTable/Control.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/TimeTable/Definitions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/TimeTable/Definitions.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/TimeTable/MMAs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/TimeTable/MMAs.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/TimeTable/Solution.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/TimeTable/Solution.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/TimeTable/TestOutput.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/TimeTable/TestOutput.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/bin/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -37,6 +16,7 @@
     <session id="-1895961434">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
+          <entry key="project.closed" value="1" />
           <entry key="project.open.time.11" value="1" />
           <entry key="project.open.time.37" value="1" />
           <entry key="project.opened" value="2" />
@@ -44,22 +24,22 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="java" value="8" />
+          <entry key="java" value="9" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="JAVA" value="8" />
+          <entry key="JAVA" value="9" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="java" value="2064" />
+          <entry key="java" value="2139" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JAVA" value="2064" />
+          <entry key="JAVA" value="2139" />
         </counts>
       </usages-collector>
     </session>
@@ -75,16 +55,16 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/TimeTable/Solution.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1559">
-              <caret line="881" lean-forward="true" selection-start-line="881" selection-end-line="881" />
+            <state relative-caret-position="14508">
+              <caret line="806" column="35" lean-forward="true" selection-start-line="806" selection-start-column="35" selection-end-line="806" selection-end-column="35" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/TimeTable/MaximumBipartite.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="240">
@@ -105,8 +85,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/TimeTable/MMAs.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="199">
-              <caret line="65" column="30" lean-forward="true" selection-start-line="65" selection-start-column="30" selection-end-line="65" selection-end-column="30" />
+            <state relative-caret-position="275">
+              <caret line="25" selection-start-line="25" selection-end-line="25" />
             </state>
           </provider>
         </entry>
@@ -121,10 +101,19 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/TimeTable/Definitions.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="126">
+              <caret line="7" column="49" selection-start-line="7" selection-start-column="49" selection-end-line="7" selection-end-column="49" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/TimeTable/Control.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="18">
-              <caret line="122" column="22" selection-start-line="122" selection-start-column="22" selection-end-line="122" selection-end-column="22" />
+              <caret line="125" column="5" lean-forward="true" selection-start-line="125" selection-start-column="5" selection-end-line="125" selection-end-column="5" />
             </state>
           </provider>
         </entry>
@@ -153,6 +142,8 @@
       <find>move1(int</find>
       <find>assignRooms(int</find>
       <find>after ls</find>
+      <find>control.Tr</find>
+      <find>32</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -164,8 +155,9 @@
         <option value="$PROJECT_DIR$/src/TimeTable/Control.java" />
         <option value="$PROJECT_DIR$/src/TimeTable/TestOutput.java" />
         <option value="$PROJECT_DIR$/src/TimeTable/MaximumBipartite.java" />
-        <option value="$PROJECT_DIR$/src/TimeTable/MMAs.java" />
         <option value="$PROJECT_DIR$/src/TimeTable/Solution.java" />
+        <option value="$PROJECT_DIR$/src/TimeTable/MMAs.java" />
+        <option value="$PROJECT_DIR$/src/TimeTable/Definitions.java" />
       </list>
     </option>
   </component>
@@ -257,7 +249,7 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.4140753" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.41898528" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -285,7 +277,7 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.4140753" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.4140753" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -322,17 +314,24 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/TimeTable/Control.java">
+    <entry file="file://$PROJECT_DIR$/src/TimeTable/Solution.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="18">
-          <caret line="122" column="22" selection-start-line="122" selection-start-column="22" selection-end-line="122" selection-end-column="22" />
+        <state relative-caret-position="14508">
+          <caret line="806" column="35" lean-forward="true" selection-start-line="806" selection-start-column="35" selection-end-line="806" selection-end-column="35" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/TimeTable/TestOutput.java">
+    <entry file="file://$PROJECT_DIR$/src/TimeTable/Control.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="199">
-          <caret line="37" column="1" selection-start-line="37" selection-start-column="1" selection-end-line="37" selection-end-column="1" />
+        <state relative-caret-position="18">
+          <caret line="125" column="5" lean-forward="true" selection-start-line="125" selection-start-column="5" selection-end-line="125" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/TimeTable/Definitions.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="7" column="49" selection-start-line="7" selection-start-column="49" selection-end-line="7" selection-end-column="49" />
         </state>
       </provider>
     </entry>
@@ -345,8 +344,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/TimeTable/MMAs.java">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="275">
+          <caret line="25" selection-start-line="25" selection-end-line="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/TimeTable/TestOutput.java">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="199">
-          <caret line="65" column="30" lean-forward="true" selection-start-line="65" selection-start-column="30" selection-end-line="65" selection-end-column="30" />
+          <caret line="37" column="1" selection-start-line="37" selection-start-column="1" selection-end-line="37" selection-end-column="1" />
         </state>
       </provider>
     </entry>
@@ -354,13 +360,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="240">
           <caret line="110" column="14" selection-start-line="110" selection-start-column="14" selection-end-line="110" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/TimeTable/Solution.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1559">
-          <caret line="881" lean-forward="true" selection-start-line="881" selection-end-line="881" />
         </state>
       </provider>
     </entry>
