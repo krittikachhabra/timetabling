@@ -96,7 +96,8 @@ public class Control
                 { // only one class can be in each room at any timeslot
                     hcv = hcv + 1;
                     roomOverLap = roomOverLap + 1;
-
+                    System.out.println(i + " overlap with " + j + ", " + bestSolution.sln.elementAt(i).first
+                                    + " " + bestSolution.sln.elementAt(j).second);
                 }
                 if ((bestSolution.sln.elementAt(i).first == bestSolution.sln.elementAt(j).first) && (bestSolution.data.eventCorrelations[i][j] == 1))
                 {  // two events sharing students cannot be in the same timeslot
@@ -108,6 +109,45 @@ public class Control
             if(bestSolution.sln.elementAt(i).second != -1)
                 if( bestSolution.data.possibleRooms[i][bestSolution.sln.elementAt(i).second]  == 0 )
                     // an event should take place in a suitable room
+                {
+                    hcv = hcv + 1;
+                }
+        }
+        System.out.println("RoomOverLap = "+roomOverLap);
+        System.out.println("Student is screwed = "+studentScrewed);
+        System.out.println("Room is screwed = "+(hcv - studentScrewed - roomOverLap));
+        return hcv;
+    }
+
+
+    int getRoomOverlap(Solution bestSolution)
+    {
+        int hcv = 0;
+        int roomOverLap = 0;
+        int studentScrewed = 0;
+        int roomScrewed = 0;
+        for (int i = 0; i < bestSolution.data.n_of_events; i++)
+        {
+            for (int j = i+1; j < bestSolution.data.n_of_events; j++)
+            {
+                if ( (bestSolution.sln.elementAt(i).second != -1 ) &&
+                        (bestSolution.sln.elementAt(i).first == bestSolution.sln.elementAt(j).first) && (bestSolution.sln.elementAt(i).second == bestSolution.sln.elementAt(j).second))
+                { // only one class can be in each room at any timeslot
+                    hcv = hcv + 1;
+                    roomOverLap = roomOverLap + 1;
+                    System.out.println(i + " overlap with " + j + ", " + bestSolution.sln.elementAt(i).first
+                            + " " + bestSolution.sln.elementAt(j).second);
+                }
+                if ((bestSolution.sln.elementAt(i).first == bestSolution.sln.elementAt(j).first) && (bestSolution.data.eventCorrelations[i][j] == 1))
+                {  // two events sharing students cannot be in the same timeslot
+                    hcv = hcv + 1;
+                    studentScrewed = studentScrewed + 1;
+                }
+            }
+            //System.out.println("Event = "+i+"timeslot = " + sln.elementAt(i).first + ", room =  " + sln.elementAt(i).second);
+            if(bestSolution.sln.elementAt(i).second != -1)
+                if( bestSolution.data.possibleRooms[i][bestSolution.sln.elementAt(i).second]  == 0 )
+                // an event should take place in a suitable room
                 {
                     hcv = hcv + 1;
                 }

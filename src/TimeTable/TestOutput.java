@@ -28,5 +28,11 @@ public class TestOutput {
         }
     }
 
+    public void printTSlotEventsSingle(Solution slnInput , int tslot) {
+        slnTest = slnInput;
+        System.out.print("TimeSlot : List of events\n" + tslot + " : ");
 
+        for(int ilc=0;ilc<slnTest.timeslot_events.get(tslot).size();ilc++)
+            System.out.print(slnTest.timeslot_events.get(tslot).elementAt(ilc) + " ");
+    }
 }
