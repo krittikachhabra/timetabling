@@ -89,6 +89,9 @@ public class Control
         int roomScrewed = 0;
         for (int i = 0; i < bestSolution.data.n_of_events; i++)
         {
+            if(bestSolution.sln.elementAt(i).second == -1) {        // if room not assigned, increment hcv
+                hcv = hcv + 1;
+            }
             for (int j = i+1; j < bestSolution.data.n_of_events; j++)
             {
                 if ( (bestSolution.sln.elementAt(i).second != -1 ) &&
