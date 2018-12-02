@@ -29,9 +29,18 @@ public class Solution extends Thread
 
     void copy(Solution orig)
     {
-        this.sln = orig.sln;
+//        this.sln = orig.sln;
+        for(int lc=0;lc<data.n_of_events;lc++) {
+            this.sln.set(lc, new Pair<>(orig.sln.elementAt(lc).first, orig.sln.elementAt(lc).second));
+        }
         this.data = orig.data;
-        this.timeslot_events = orig.timeslot_events;
+//        this.timeslot_events = orig.timeslot_events;
+
+        for(int lc = 0;lc < Definitions.N_OF_TIMESLOTS ; lc++) {
+            if(orig.timeslot_events.containsKey(lc)) {
+                this.timeslot_events.put(lc, new Vector<Integer>(orig.timeslot_events.get(lc)));
+            }
+        }
         this.feasible = orig.feasible;
         this.scv = orig.scv;
         this.hcv = orig.hcv;
@@ -156,7 +165,6 @@ public class Solution extends Thread
                 (sln.elementAt(i).first == sln.elementAt(j).first) && (sln.elementAt(i).second == sln.elementAt(j).second)) { // only one class can be in each room at any timeslot
                     hcv = hcv + 1;
                     roomOverLap = roomOverLap + 1;
-
                 }
                 if ((sln.elementAt(i).first == sln.elementAt(j).first) && (data.eventCorrelations[i][j] == 1)) {  // two events sharing students cannot be in the same timeslot
                     hcv = hcv + 1;
@@ -180,6 +188,7 @@ public class Solution extends Thread
 //        System.out.println("timeslot " + t);
         MaximumBipartite roomAllocator = new MaximumBipartite(this, t, data);
         int[] result = roomAllocator.matchR;
+        boolean eventList[] = new boolean[data.n_of_events];
 
         for (int i = 0; i < data.n_of_rooms; i++) {
             int event = result[i];
@@ -188,15 +197,61 @@ public class Solution extends Thread
   //                      + " r = " + this.sln.get(event).second);
                 Pair temporary = new Pair(t, i);
                 this.sln.set(event, temporary);
+                eventList[event] = true;
                 // System.out.println(event+" Alloc from result set "+i + ", ");
             }
         }
+
+        // for the remaining events not allocated a room
+        for(int lc=0;lc<data.n_of_events;lc++) {
+            if (eventList[lc] == false) {
+                Pair temp = new Pair(this.sln.get(lc).first, -1);         // as it does not hae a room anymore
+                this.sln.set(lc, temp);
+            }
+        }
+
         /*System.out.println("Inside solution after maxBp");
         Control controlObj = new Control();
         System.out.println(controlObj.computeHCV(this));*/
 
         //System.out.println("timeslot = "+t+" = "+Arrays.toString(result));
     }
+
+    void assignRoomsForLocalSearch(int t)
+    {
+//        System.out.println("timeslot " + t);
+        MaximumBipartite roomAllocator = new MaximumBipartite(this, t, data);
+        int[] result = roomAllocator.matchR;
+        boolean eventList[] = new boolean[data.n_of_events];
+
+        for (int i = 0; i < data.n_of_rooms; i++) {
+            int event = result[i];
+            if (event != -1) {
+//                System.out.println("before t = " + this.sln.get(event).first
+                //                      + " r = " + this.sln.get(event).second);
+                Pair temporary = new Pair(t, i);
+                this.sln.set(event, temporary);
+                eventList[event] = true;
+                // System.out.println(event+" Alloc from result set "+i + ", ");
+            }
+        }
+
+
+        // for the remaining events not allocated a room
+        for(int lc=0;lc<data.n_of_events;lc++) {
+            if (eventList[lc] == false) {
+                Pair temp = new Pair(this.sln.get(lc).first, -1);         // as it does not hae a room anymore
+                this.sln.set(lc, temp);
+            }
+        }
+
+        /*System.out.println("Inside solution after maxBp");
+        Control controlObj = new Control();
+        System.out.println(controlObj.computeHCV(this));*/
+
+        //System.out.println("timeslot = "+t+" = "+Arrays.toString(result));
+    }
+
 
     int[] firstComeFirstServe(int timeslot)
     {
@@ -234,24 +289,36 @@ public class Solution extends Thread
     }
 
 
-    //compute hard constraint violations that can be affected by moving event e from its timeslot
+    //compute hard constraint violations that can be affected
+    // by moving event e from its timeslot
     private int eventAffectedHcv(int e)
     {
-        int aHcv = 0; // set to zero the affected hard constraint violations for event e
+        // set to zero the affected hard
+        // constraint violations for event e
+        int aHcv = 0;
+
         int t = sln.elementAt(e).first; // t timeslot where event e is
+
         for (int i = 0; i < timeslot_events.get(t).size(); i++)
         {
             for(int j= i+1;  j < timeslot_events.get(t).size(); j++)
             {
                 if (sln.elementAt(timeslot_events.get(t).get(i)).second == sln.elementAt(timeslot_events.get(t).get(j)).second) {
-                    aHcv = aHcv + 1; // adds up number of room clashes in the timeslot of the given event (rooms assignement are affected by move for the whole timeslot)
+                    // adds up number of room clashes in
+                    // the timeslot of the given event
+                    // (rooms assignement are affected
+                    // by move for the whole timeslot)
+                    aHcv = aHcv + 1;
                     //cout << "room + timeslot in common "  <<aHcv <<" events " << timeslot_events[t][i] << " and " << timeslot_events[t][j] << endl;
                 }
             }
             if(timeslot_events.get(t).get(i) != e)
             {
                 if(data.eventCorrelations[e][timeslot_events.get(t).get(i)] == 1) {
-                    aHcv = aHcv + 1;  // adds up number of incompatible (because of students in common) events in the same timeslot
+                    // adds up number of incompatible
+                    // (because of students in common)
+                    // events in the same timeslot
+                    aHcv = aHcv + 1;
                     // the only hcv of this type affected when e is moved are the ones involving e
                     //cout << "students in common " << aHcv <<" event " << timeslot_events[t][i] << endl;
                 }
@@ -264,12 +331,12 @@ public class Solution extends Thread
     private int affectedRoomInTimeslotHcv(int t)
     {
         int roomHcv = 0;
-        for(int i= 0;  i < timeslot_events.get(t).size(); i++)
-        {
-            for(int j= i+1;  j < timeslot_events.get(t).size(); j++)
-            {
-                if (sln.elementAt(timeslot_events.get(t).get(i)).second == sln.elementAt(timeslot_events.get(t).get(j)).second)
-                    roomHcv += 1;
+        if (timeslot_events.containsKey(t)) {
+            for (int i = 0; i < timeslot_events.get(t).size(); i++) {
+                for (int j = i + 1; j < timeslot_events.get(t).size(); j++) {
+                    if (sln.elementAt(timeslot_events.get(t).get(i)).second == sln.elementAt(timeslot_events.get(t).get(j)).second)
+                        roomHcv += 1;
+                }
             }
         }
         return roomHcv;
@@ -408,7 +475,7 @@ public class Solution extends Thread
         //move event e to timeslot t
         int tslot =  sln.elementAt(e).first;
         Pair tmp = new Pair(t,sln.elementAt(e).second); 
-//        sln.elementAt(e).first = t;
+//       sln.elementAt(e).first = t;
         sln.set(e, tmp);
 
 
@@ -430,8 +497,9 @@ public class Solution extends Thread
                 break;
             }
         }
-        
+
         timeslot_events.get(tslot).remove(counter);    // remove event e from the original timeslot
+
         if(timeslot_events.containsKey(t))
         	timeslot_events.get(t).addElement(e);   // and place it in timeslot t
         else
@@ -440,17 +508,16 @@ public class Solution extends Thread
         	arg1.addElement(e);
 			timeslot_events.put(t, arg1);
         }
-        // reorder in label order events in timeslot t
 
-//        System.out.println("Start Sort timeslot_events");
+        // reorder in label order events in timeslot t
         Collections.sort(timeslot_events.get(t));
-//        System.out.println("Sorted timeslot_events");
 
         // reassign rooms to events in timeslot t
-        assignRooms(t);
+        assignRoomsForLocalSearch(t);
+
         // do the same for the original timeslot of event e if it is not empty
         if(timeslot_events.get(tslot).size() > 0)
-            assignRooms(tslot);
+            assignRoomsForLocalSearch(tslot);
     }
 
     void Move2(int e1, int e2)
@@ -654,7 +721,7 @@ public class Solution extends Thread
 
 //        System.out.println("Computed Feasibility");
 
-        if(!feasible )
+        if(!feasible)
         { // if the timetable is not feasible try to solve hcv
             for( int i = 0; evCount < data.n_of_events; i = (i+1)% data.n_of_events)
             {
@@ -667,10 +734,11 @@ public class Solution extends Thread
                 }
                 // otherwise if the event in consideration caused hcv
                 int currentAffectedHcv;
-                int t_start = (int)(Math.random()*45); // try moves of type 1
+                int t_start = (int)(Math.random() * Definitions.N_OF_TIMESLOTS); // try moves of type 1
                 int t_orig = sln.get(eventList[i]).first;
 
-                for(int h = 0, t = t_start; h < 45; t= (t+1)%45, h++)
+                for(int h = 0, t = t_start; h < Definitions.N_OF_TIMESLOTS;
+                                        t = (t+1)%Definitions.N_OF_TIMESLOTS, h++)
                 {
                     if(stepCount > maxSteps ||System.currentTimeMillis()>FinishTime)
                         break;
@@ -684,7 +752,8 @@ public class Solution extends Thread
                         neighbourSolution.copy( this );
                         //cout<< "event " << eventList[i] << " timeslot " << t << endl;
                         neighbourSolution.Move1(eventList[i],t);
-                        neighbourAffectedHcv = neighbourSolution.eventAffectedHcv(eventList[i]) + neighbourSolution.affectedRoomInTimeslotHcv(t_orig);
+                        neighbourAffectedHcv = neighbourSolution.eventAffectedHcv(eventList[i]) +
+                                                neighbourSolution.affectedRoomInTimeslotHcv(t_orig);
                         currentAffectedHcv = eventAffectedHcv(eventList[i]) + affectedRoomInTimeslotHcv(t);
                         if( neighbourAffectedHcv < currentAffectedHcv){
                             //cout<<"current hcv " << computeHcv() << "neighbour " << neighbourSolution.computeHcv()<< endl;
@@ -805,6 +874,10 @@ public class Solution extends Thread
                 }
                 evCount++;
             }
+
+            /*System.out.println("after ls");
+            new Control().computeHCV(this);
+            System.out.println();*/
         }
 
 //        System.out.println(" if(!feasible ) terminated");

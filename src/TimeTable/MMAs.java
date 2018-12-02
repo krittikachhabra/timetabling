@@ -61,6 +61,8 @@ public class MMAs
                     }
                 }
 
+                /*System.out.println("before local search idx = " +  ant_idx);
+                control.computeHCV(ant[ant_idx].solution);*/
                 ant[ant_idx].solution.localSearch(100,2);
                 
                 ant[ant_idx].solution.computeFeasibility();
