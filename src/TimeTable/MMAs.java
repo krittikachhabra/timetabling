@@ -33,7 +33,7 @@ public class MMAs
 
             long startTime = System.currentTimeMillis();
 
-            while ((System.currentTimeMillis() - startTime) < 5000)
+            while ((System.currentTimeMillis() - startTime) < 60*1000)
             {
 
                 for (int i=0;i<n_of_ants;i++)
@@ -66,7 +66,18 @@ public class MMAs
 
                 /*System.out.println("before local search idx = " +  ant_idx);
                 control.computeHCV(ant[ant_idx].solution);*/
-                ant[ant_idx].solution.localSearch(100,2);
+
+               /* for(int i = 0 ; i < ant[ant_idx].solution.data.n_of_events ; i++)
+                {
+                    if(sln.elementAt(i).second == -1)
+                        counter = counter + 1;
+                    else
+                        System.out.println("Event = "+i+" Time = "+sln.elementAt(i).first+
+                                " Room = "+sln.elementAt(i).second);
+                }*/
+
+                System.out.println("Be LS Room = ");
+                ant[ant_idx].solution.localSearch(Integer.MAX_VALUE,120);
                 
                 ant[ant_idx].solution.computeFeasibility();
                 if (ant[ant_idx].solution.feasible)
