@@ -2,11 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3d7fd6f2-1b01-436f-a78b-a33dcc90a7d1" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/TimeTable/Control.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/TimeTable/Control.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/TimeTable/Definitions.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/TimeTable/Definitions.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/TimeTable/Solution.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/TimeTable/Solution.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/TimeTable/Definitions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/TimeTable/Definitions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/TimeTable/MMAs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/TimeTable/MMAs.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/TimeTable/Solution.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/TimeTable/Solution.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/bin/" />
@@ -20,7 +17,7 @@
     <session id="-1895961434">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="2" />
+          <entry key="project.closed" value="3" />
           <entry key="project.open.time.11" value="1" />
           <entry key="project.open.time.37" value="1" />
           <entry key="project.open.time.45" value="1" />
@@ -40,12 +37,12 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="java" value="2949" />
+          <entry key="java" value="3090" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JAVA" value="2949" />
+          <entry key="JAVA" value="3090" />
         </counts>
       </usages-collector>
     </session>
@@ -61,14 +58,13 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/TimeTable/Solution.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="155">
-              <caret line="740" column="17" lean-forward="true" selection-start-line="740" selection-start-column="17" selection-end-line="740" selection-end-column="17" />
+            <state relative-caret-position="397">
+              <caret line="351" column="37" selection-start-line="351" selection-start-column="37" selection-end-line="351" selection-end-column="37" />
               <folding>
                 <element signature="method#computeScv#0;class#Solution#0" />
-                <element signature="method#computeHCV#0;class#Solution#0" />
                 <element signature="method#assignRooms#0;class#Solution#0" />
                 <element signature="method#assignRoomsForLocalSearch#0;class#Solution#0" />
                 <element signature="method#firstComeFirstServe#0;class#Solution#0" />
@@ -97,11 +93,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/TimeTable/MMAs.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="432">
-              <caret line="25" selection-start-line="25" selection-end-line="25" />
+            <state relative-caret-position="725">
+              <caret line="68" column="57" selection-start-line="68" selection-start-column="57" selection-end-line="68" selection-end-column="57" />
             </state>
           </provider>
         </entry>
@@ -118,8 +114,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/TimeTable/Definitions.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="72">
-              <caret line="4" column="51" selection-start-line="4" selection-start-column="51" selection-end-line="4" selection-end-column="51" />
+            <state relative-caret-position="126">
+              <caret line="7" column="50" selection-start-line="7" selection-start-column="50" selection-end-line="7" selection-end-column="50" />
             </state>
           </provider>
         </entry>
@@ -127,8 +123,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/TimeTable/Control.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2304">
-              <caret line="128" column="5" selection-start-line="128" selection-start-column="5" selection-end-line="128" selection-end-column="5" />
+            <state relative-caret-position="221">
+              <caret line="90" column="9" lean-forward="true" selection-start-line="90" selection-start-column="9" selection-end-line="90" selection-end-column="9" />
             </state>
           </provider>
         </entry>
@@ -137,16 +133,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>copy</find>
-      <find>events</find>
-      <find>localSearch</find>
-      <find>computeH</find>
-      <find>affectedRoomI</find>
-      <find>computeHCV()</find>
-      <find>int computeHCV()</find>
-      <find>HCV</find>
-      <find>room overlap</find>
-      <find>ant[i].start</find>
       <find>localsearch</find>
       <find>assignRooms(int</find>
       <find>move1</find>
@@ -166,6 +152,17 @@
       <find>affectedRoomInTimeslotHcv</find>
       <find>eventaffectedHcv(i</find>
       <find>event &quot;</find>
+      <find>room</find>
+      <find>roomOv</find>
+      <find>RoomOverlap</find>
+      <find>system.out.println(&quot;now hcv</find>
+      <find>roomOverlap</find>
+      <find>15000</find>
+      <find>computeHCV()</find>
+      <find>computeHcv()</find>
+      <find>computeHcv(</find>
+      <find>computeHcv(Sol</find>
+      <find>roomoverlap</find>
     </findStrings>
     <replaceStrings>
       <replace>affectedRoomsInTimeslotHcv</replace>
@@ -180,17 +177,16 @@
         <option value="$PROJECT_DIR$/src/TimeTable/Control.java" />
         <option value="$PROJECT_DIR$/src/TimeTable/TestOutput.java" />
         <option value="$PROJECT_DIR$/src/TimeTable/MaximumBipartite.java" />
-        <option value="$PROJECT_DIR$/src/TimeTable/MMAs.java" />
-        <option value="$PROJECT_DIR$/src/TimeTable/Definitions.java" />
         <option value="$PROJECT_DIR$/src/TimeTable/Solution.java" />
+        <option value="$PROJECT_DIR$/src/TimeTable/Definitions.java" />
+        <option value="$PROJECT_DIR$/src/TimeTable/MMAs.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="15" />
-    <option name="y" value="30" />
-    <option name="width" value="1890" />
-    <option name="height" value="1020" />
+    <option name="x" value="676" />
+    <option name="width" value="697" />
+    <option name="height" value="735" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -274,7 +270,7 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32569557" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.55482817" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -353,13 +349,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/TimeTable/MMAs.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="432">
-          <caret line="25" selection-start-line="25" selection-end-line="25" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/TimeTable/Problem.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="198">
@@ -369,31 +358,37 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/TimeTable/Definitions.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="72">
-          <caret line="4" column="51" selection-start-line="4" selection-start-column="51" selection-end-line="4" selection-end-column="51" />
+        <state relative-caret-position="126">
+          <caret line="7" column="50" selection-start-line="7" selection-start-column="50" selection-end-line="7" selection-end-column="50" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/TimeTable/Control.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2304">
-          <caret line="128" column="5" selection-start-line="128" selection-start-column="5" selection-end-line="128" selection-end-column="5" />
+        <state relative-caret-position="221">
+          <caret line="90" column="9" lean-forward="true" selection-start-line="90" selection-start-column="9" selection-end-line="90" selection-end-column="9" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/TimeTable/Solution.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="155">
-          <caret line="740" column="17" lean-forward="true" selection-start-line="740" selection-start-column="17" selection-end-line="740" selection-end-column="17" />
+        <state relative-caret-position="397">
+          <caret line="351" column="37" selection-start-line="351" selection-start-column="37" selection-end-line="351" selection-end-column="37" />
           <folding>
             <element signature="method#computeScv#0;class#Solution#0" />
-            <element signature="method#computeHCV#0;class#Solution#0" />
             <element signature="method#assignRooms#0;class#Solution#0" />
             <element signature="method#assignRoomsForLocalSearch#0;class#Solution#0" />
             <element signature="method#firstComeFirstServe#0;class#Solution#0" />
             <element signature="e#21086#21095#0" expanded="true" />
             <element signature="method#eventHcv#0;class#Solution#0" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/TimeTable/MMAs.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="725">
+          <caret line="68" column="57" selection-start-line="68" selection-start-column="57" selection-end-line="68" selection-end-column="57" />
         </state>
       </provider>
     </entry>

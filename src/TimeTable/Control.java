@@ -71,22 +71,11 @@ public class Control
         bestEvaluation = Integer.MAX_VALUE;
     }
 
-    void printSolution(Solution bestSolution)
-    {
-        for(int i = 0 ; i < bestSolution.data.n_of_events ; i++)
-                {
-                    System.out.println("Event = "+i+" Time = "+bestSolution.sln.elementAt(i).first+
-                            " Room = "+bestSolution.sln.elementAt(i).second);
-                }
-
-    }
-
     int computeHCV(Solution bestSolution)
     {
         int hcv = 0;
         int roomOverLap = 0;
         int studentScrewed = 0;
-        int roomScrewed = 0;
         for (int i = 0; i < bestSolution.data.n_of_events; i++)
         {
             /*if(bestSolution.sln.elementAt(i).second == -1) {        // if room not assigned, increment hcv

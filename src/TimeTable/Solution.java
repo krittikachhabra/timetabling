@@ -159,8 +159,13 @@ public class Solution extends Thread
         hcv = 0;
         int roomOverLap = 0;
         int studentScrewed = 0;
-        for (int i = 0; i < data.n_of_events; i++) {
-            for (int j = i + 1; j < data.n_of_events; j++) {
+        for (int i = 0; i < data.n_of_events; i++)
+        {
+            if ( sln.elementAt(i).second == -1 )
+                hcv = hcv + 1;
+
+            for (int j = i + 1; j < data.n_of_events; j++)
+            {
             	if ( (sln.elementAt(i).second != -1 ) &&
                 (sln.elementAt(i).first == sln.elementAt(j).first) && (sln.elementAt(i).second == sln.elementAt(j).second)) { // only one class can be in each room at any timeslot
                     hcv = hcv + 1;
@@ -249,41 +254,6 @@ public class Solution extends Thread
         System.out.println(controlObj.computeHCV(this));*/
 
         //System.out.println("timeslot = "+t+" = "+Arrays.toString(result));
-    }
-
-    int[] firstComeFirstServe(int timeslot)
-    {
-        int numberOfRooms = data.n_of_rooms;
-        int numberOfEvents = timeslot_events.get(timeslot).size();
-
-        int temporary[] = new int[numberOfRooms];
-
-        for (int i = 0; i < numberOfRooms; i++)
-            temporary[i] = -1;
-
-        for (int i = 0; i < numberOfRooms; i++) {
-            for (int j = 0; j < numberOfEvents; j++) {
-                //int eventToBeHeld = timeslot_events.get(timeslot).elementAt((int)(Math.random() * numberOfEvents));
-                int eventToBeHeld = timeslot_events.get(timeslot).elementAt(j);
-
-                if (data.possibleRooms[eventToBeHeld][i] == 1) {
-                    if (temporary[i] == -1) {
-                        boolean allReadyAllocated = false;
-                        for (int k = 0; k < i; k++) {
-                            if (temporary[k] == eventToBeHeld) {
-                                allReadyAllocated = true;
-                                break;
-                            }
-
-                        }
-
-                        if (!allReadyAllocated)
-                            temporary[i] = eventToBeHeld;
-                    }
-                }
-            }
-        }
-        return temporary;
     }
 
     //compute hard constraint violations that (can be affected
@@ -489,18 +459,16 @@ public class Solution extends Thread
 
     void Move1(int e, int t)
     {
-        //move event e to timeslot t
         int tslot =  sln.elementAt(e).first;
-        Pair tmp = new Pair(t,sln.elementAt(e).second); 
-//       sln.elementAt(e).first = t;
+        Pair tmp = new Pair(t,sln.elementAt(e).second);
         sln.set(e, tmp);
 
-
-        Iterator i = timeslot_events.get(tslot).iterator();
         int counter = 0;
 
-        for(int lc=0;lc<timeslot_events.get(tslot).size();lc++) {
-            if(timeslot_events.get(tslot).elementAt(lc) == e) {
+        for(int lc=0;lc<timeslot_events.get(tslot).size();lc++)
+        {
+            if(timeslot_events.get(tslot).elementAt(lc) == e)
+            {
                 counter  = lc;
                 break;
             }
@@ -510,6 +478,7 @@ public class Solution extends Thread
 
         if(timeslot_events.containsKey(t))
         	timeslot_events.get(t).addElement(e);   // and place it in timeslot t
+
         else
         {
         	Vector<Integer> arg1 = new Vector<Integer>();
@@ -540,14 +509,6 @@ public class Solution extends Thread
         Pair tmp2 = new Pair(t,sln.elementAt(e2).second); 
         sln.set(e1, tmp1);
         sln.set(e2, tmp2);
-        Iterator i = timeslot_events.get(t).iterator();
-
-        /*while(i.hasNext()){       // look for the iterator of e1 in the vector
-//        	i.next();
-            if( i.next().equals(e1))
-                break;
-        }*/
-        
         
         // look for the index of e1 in the vector
         int counter = -1;
@@ -561,13 +522,6 @@ public class Solution extends Thread
         
         timeslot_events.get(t).remove(counter);
         timeslot_events.get(t).addElement(e2);
-        i = timeslot_events.get(sln.elementAt(e1).first).iterator();
-        
-        /*while(i.hasNext()){
-//        	i.next();
-            if( i.next().equals(e2))
-                break;
-        }*/
         
         counter = -1;
         for(int lc=0;lc<timeslot_events.get(sln.elementAt(e1).first).size();lc++) {
@@ -580,7 +534,6 @@ public class Solution extends Thread
         timeslot_events.get(sln.elementAt(e1).first).remove(counter);
         timeslot_events.get(sln.elementAt(e1).first).addElement(e1);
 
-        //sort(timeslot_events[t].begin(),timeslot_events[t].end());
         Collections.sort(timeslot_events.get(t));
         Collections.sort(timeslot_events.get(sln.get(e1).first));
         assignRooms( sln.elementAt(e1).first);
@@ -591,9 +544,6 @@ public class Solution extends Thread
     {
         // permute event e1, e2, and e3 in a 3-cycle
         int t = sln.elementAt(e1).first;
-        /*sln.elementAt(e1).first = sln.elementAt(e2).first;
-        sln.elementAt(e2).first = sln.elementAt(e3).first;
-        sln.elementAt(e3).first = t;*/
         
         Pair tmp1 = new Pair(sln.elementAt(e2).first, sln.elementAt(e1).second);
         Pair tmp2 = new Pair(sln.elementAt(e3).first, sln.elementAt(e2).second);
@@ -602,13 +552,7 @@ public class Solution extends Thread
         sln.set(e3, tmp3);
         sln.set(e2, tmp2);
         sln.set(e1, tmp1);
-        
-        Iterator i = timeslot_events.get(t).iterator();
-        /*while(i.hasNext()){
-//        	i.next();
-            if(i.next().equals(e1))
-                break;
-        }*/
+
         
         int counter = -1;
         for(int lc=0;lc<timeslot_events.get(t).size();lc++) {
@@ -620,14 +564,7 @@ public class Solution extends Thread
         
         timeslot_events.get(t).remove(counter);
         timeslot_events.get(t).addElement(e3);
-        
-        /*i = timeslot_events.get(sln.elementAt(e1).first).iterator();
-        while(i.hasNext()){
-//        	i.next();
-            if( i.next().equals(e2))
-                break;
-        }*/
-        
+
         counter = -1;
         for(int lc=0;lc<timeslot_events.get(sln.elementAt(e1).first).size();lc++) {
             if(timeslot_events.get(sln.elementAt(e1).first).elementAt(lc) == e2) {
@@ -638,13 +575,6 @@ public class Solution extends Thread
         
         timeslot_events.get(sln.elementAt(e1).first).remove(counter);
         timeslot_events.get(sln.elementAt(e1).first).addElement(e1);
-        
-        /*i = timeslot_events.get(sln.elementAt(e2).first).iterator();
-        while(i.hasNext()){
-        	i.next();
-            if( i.equals(e3))
-                break;
-        }*/
         
         counter = -1;
         for(int lc=0;lc<timeslot_events.get(sln.elementAt(e2).first).size();lc++) {
@@ -666,40 +596,9 @@ public class Solution extends Thread
         assignRooms(sln.get(e3).first);
     }
 
-    void randomMove()
-    {
-        //pick at random a type of move: 1, 2, or 3
-        int moveType, e1;
-        moveType = (int)(Math.random()*3) + 1;
-        e1 = (int)(Math.random()*(data.n_of_events));
-        if(moveType == 1){  // perform move of type 1
-            int t = (int)(Math.random()*45);
-            Move1(e1, t);
-            //cout<< "event " << e1 << " in timeslot " << t << endl;
-        }
-        else if(moveType == 2)
-        { // perform move of type 2
-            int e2 = (int)(Math.random()*(data.n_of_events));
-            while(e2 == e1) // take care of not swapping one event with itself
-                e2 = (int)(Math.random()*(data.n_of_events));
-            Move2( e1, e2);
-            // cout << "e1 "<< e1 << " e2 " << e2 << endl;
-        }
-        else{ // perform move of type 3
-            int e2 = (int)(Math.random()*(data.n_of_events));
-            while(e2 == e1)
-                e2 = (int)(Math.random()*(data.n_of_events));
-            int e3 = (int)(Math.random()*(data.n_of_events));
-            while(e3 == e1 || e3 == e2) // take care of having three distinct events
-                e3= (int)(Math.random()*(data.n_of_events));
-            //cout<<"e1 " << e1 << " e2 " << e2 << " e3 " << e3<< endl;
-            Move3( e1, e2, e3);
-        }
-    }
 
     void localSearch(int maxSteps,double Seconds)
     {
-        //int maxSteps,
         double prob1 = 1.0;
         double prob2 = 1.0;
         double prob3 = 0.0;
@@ -750,7 +649,7 @@ public class Solution extends Thread
                     if(stepCount > maxSteps ||System.currentTimeMillis()>FinishTime)
                         break;
 
-                    if(Math.random() < prob1)
+                    if(prob1 != 0)
                     {
                         // with given probability
                         stepCount++;
@@ -765,9 +664,14 @@ public class Solution extends Thread
                         currentAffectedHcv = eventAffectedHcv(eventList[i]) + affectedRoomsInTimeslotHcv(t);
                         if( neighbourAffectedHcv < currentAffectedHcv){
                             //cout<<"current hcv " << computeHcv() << "neighbour " << neighbourSolution.computeHcv()<< endl;
-                            System.out.println("current hcv " + computeHCV() + " neighbour " + neighbourSolution.computeHCV());
+                            //System.out.println("current hcv " + computeHCV() + " neighbour " + neighbourSolution.computeHCV());
                             copy( neighbourSolution );
                             System.out.println("Now hcv = " + computeHCV());
+
+                            if(computeHCV() == 0)
+                            {
+                                printSolution();
+                            }
                             neighbourSolution = null;
                             evCount = 0;
                             foundbetter = true;
@@ -804,11 +708,16 @@ public class Solution extends Thread
 
                             if( neighbourAffectedHcv < currentAffectedHcv)
                             {
-                                //cout<<"current hcv " << computeHcv() << "neighbour " << neighbourSolution.computeHcv()<< endl;
+                                System.out.println("current hcv " + computeHCV() + "neighbour " + neighbourSolution.computeHCV());
                                 copy( neighbourSolution );
                                 neighbourSolution = null;
                                 evCount = 0;
                                 foundbetter = true;
+
+                                if(computeHCV() == 0)
+                                {
+                                    printSolution();
+                                }
                                 break;
                             }
                             neighbourSolution = null;
@@ -1074,5 +983,21 @@ public class Solution extends Thread
         }
         // the suitable room hard constraint is taken care of by the assignroom routine
         return eHcv;
+    }
+
+    void printSolution()
+    {
+        int counter = 0;
+        for(int i = 0 ; i < data.n_of_events ; i++)
+        {
+            if(sln.elementAt(i).second == -1)
+                counter = counter + 1;
+            else
+                System.out.println("Event = "+i+" Time = "+sln.elementAt(i).first+
+                    " Room = "+sln.elementAt(i).second);
+        }
+
+        System.out.println("No room = "+counter);
+
     }
 }
